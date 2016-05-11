@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">记录吧</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">设置</string>
+    <string name="title_pic">标题图片</string>
+    <string name="title_activity_account_detail">AccountDetailActivity</string>
+</resources>
