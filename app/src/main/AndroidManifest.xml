@@ -21,7 +21,12 @@
         <activity
             android:name=".AccountDetailActivity"
             android:label="@string/title_activity_account_detail"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="a6z.com.newmemo.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
