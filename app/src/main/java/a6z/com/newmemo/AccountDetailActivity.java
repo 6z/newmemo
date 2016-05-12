@@ -7,6 +7,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.View;
 
 public class AccountDetailActivity extends AppCompatActivity {
@@ -15,11 +17,16 @@ public class AccountDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_detail);
+
+        //Set activity animations
+        getWindow().setEnterTransition(new Slide(Gravity.RIGHT));
+        getWindow().setExitTransition(new Slide(Gravity.LEFT));
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if(fab!=null) {
+        if (fab != null) {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -35,7 +42,7 @@ public class AccountDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
+        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         if (appBarLayout != null) {
             appBarLayout.setTitle("标题");
         }
@@ -53,8 +60,8 @@ public class AccountDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            /*arguments.putString(AccountDetailActivityFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(AccountDetailActivityFragment.ARG_ITEM_ID));*/
+            arguments.putString(AccountDetailActivityFragment.ARG_TAG,
+                    getIntent().getStringExtra(AccountDetailActivityFragment.ARG_TAG));
             AccountDetailActivityFragment fragment = new AccountDetailActivityFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
