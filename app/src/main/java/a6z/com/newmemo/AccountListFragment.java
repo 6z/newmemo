@@ -21,7 +21,7 @@ import a6z.com.newmemo.model.Account.AccountItem;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class AccountFragment extends Fragment {
+public class AccountListFragment extends Fragment {
 
     // TODO: Customize parameters
     private int mColumnCount = 1;
@@ -32,7 +32,7 @@ public class AccountFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public AccountFragment() {
+    public AccountListFragment() {
     }
 
     @Override

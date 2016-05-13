@@ -6,10 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import a6z.com.newmemo.AccountFragment.OnListFragmentInteractionListener;
-import a6z.com.newmemo.model.Account.AccountItem;
-
 import java.util.List;
+
+import a6z.com.newmemo.AccountListFragment.OnListFragmentInteractionListener;
+import a6z.com.newmemo.model.Account.AccountItem;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link AccountItem} and makes a call to the

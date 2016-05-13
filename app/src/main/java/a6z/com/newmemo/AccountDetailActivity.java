@@ -69,5 +69,4 @@ public class AccountDetailActivity extends AppCompatActivity {
                     .commit();
         }
     }
-
 }

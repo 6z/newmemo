@@ -3,15 +3,15 @@ package a6z.com.newmemo.model;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
  * Helper class for providing sample content for user interfaces created by
  * Android template wizards.
- * <p/>
+ * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
 public class Account {
@@ -19,12 +19,12 @@ public class Account {
     /**
      * An array of sample (dummy) items.
      */
-    public static final List<AccountItem> ITEMS = new ArrayList<AccountItem>();
+    public static final List<AccountItem> ITEMS = new ArrayList<>();
 
     /**
      * A map of sample (dummy) items, by ID.
      */
-    public static final Map<String, AccountItem> ITEM_MAP = new HashMap<String, AccountItem>();
+    public static final Map<String, AccountItem> ITEM_MAP = new HashMap<>();
 
     private static final int COUNT = 25;
 
@@ -45,13 +45,14 @@ public class Account {
         item.setTitle("账号 " + position);
         item.setComment(makeComments(position));
         item.setUpdateTime(Calendar.getInstance());
+        for (int i = 1; i <= 5; i++) {
+            item.addDetail("key_" + i, "value_" + i);
+        }
         return item;
     }
 
     private static String makeComments(int position) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("银行 ").append("网站 ").append("生活");
-        return builder.toString();
+        return "银行 " + "网站 " + "生活";
     }
 
     /**
@@ -64,6 +65,12 @@ public class Account {
         private Calendar updateTime;
         private List<AccountDetail> details;
         private Map<String, AccountDetail> detailMap;
+
+        public AccountItem(String id) {
+            this.id = id;
+            this.details = new ArrayList<>();
+            this.detailMap = new HashMap<>();
+        }
 
         public String getId() {
             return id;
@@ -85,17 +92,17 @@ public class Account {
             this.comment = comment;
         }
 
-        public void setUpdateTime(Calendar updateTime) {
-            this.updateTime = updateTime;
-        }
-
         public Calendar getUpdateTime() {
 
             return updateTime;
         }
 
-        public String getFormattedUpdateTime(String pattern){
-            SimpleDateFormat format =new SimpleDateFormat(pattern);
+        public void setUpdateTime(Calendar updateTime) {
+            this.updateTime = updateTime;
+        }
+
+        public String getFormattedUpdateTime(String pattern) {
+            SimpleDateFormat format = new SimpleDateFormat(pattern, Locale.SIMPLIFIED_CHINESE);
             return format.format(this.updateTime.getTime());
         }
 
@@ -103,19 +110,13 @@ public class Account {
             return details;
         }
 
-        public AccountItem(String id) {
-            this.id = id;
-            this.details = new ArrayList<>();
-            this.detailMap = new HashMap<>();
-        }
-
-        public void AddDetail(String key, String value) {
+        public void addDetail(String key, String value) {
             AccountDetail item = AccountDetail.Create(key, value);
             this.details.add(item);
             this.detailMap.put(item.getId(), item);
         }
 
-        public void RemoveDetail(String id) {
+        public void removeDetail(String id) {
             AccountDetail item = this.detailMap.remove(id);
             this.details.remove(item);
         }
@@ -131,15 +132,15 @@ public class Account {
         private String name;
         private String value;
 
+        private AccountDetail(String name, String value) {
+            this.name = name;
+            this.value = value;
+        }
+
         public static AccountDetail Create(String key, String value) {
             AccountDetail item = new AccountDetail(key, value);
             item.id = java.util.UUID.randomUUID().toString().replaceAll("-", "");
             return item;
-        }
-
-        private AccountDetail(String name, String value) {
-            this.name = name;
-            this.value = value;
         }
 
         public String getId() {
