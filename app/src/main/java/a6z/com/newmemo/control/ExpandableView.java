@@ -47,6 +47,8 @@ public class ExpandableView extends RelativeLayout {
     private ValueAnimator animator;
     private RotateAnimation rotateAnimator;
 
+    private int contentDefaultVisible;
+
     public ExpandableView(Context context) {
         super(context);
         init();
@@ -63,6 +65,8 @@ public class ExpandableView extends RelativeLayout {
     }
 
     private void init() {
+        contentDefaultVisible = GONE;
+
         inflate(getContext(), R.layout.expandable_view, this);
 
         outsideContentLayoutList = new ArrayList<>();
@@ -93,7 +97,7 @@ public class ExpandableView extends RelativeLayout {
                     @Override
                     public boolean onPreDraw() {
                         contentLayout.getViewTreeObserver().removeOnPreDrawListener(this);
-                        contentLayout.setVisibility(View.GONE);
+                        contentLayout.setVisibility(contentDefaultVisible);
 
                         final int widthSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
                         final int heightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
@@ -103,6 +107,10 @@ public class ExpandableView extends RelativeLayout {
                         return true;
                     }
                 });
+    }
+
+    public void setContentDefaultVisible(int visible) {
+        this.contentDefaultVisible = visible;
     }
 
     /**

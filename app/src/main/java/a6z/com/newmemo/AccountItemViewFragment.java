@@ -50,14 +50,12 @@ public class AccountItemViewFragment extends Fragment {
         if (detailView != null) {
             detailView.fillData(R.drawable.ic_menu_send, "账号明细");
             RecyclerView recyclerView = new RecyclerView(getContext());
-            if (recyclerView != null) {
-                Context context = view.getContext();
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                //recyclerView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
-                recyclerView.setAdapter(new AccountItemDetailRecyclerViewAdapter(mItem.getDetails()));
-            }
+            Context context = view.getContext();
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setAdapter(new AccountItemDetailRecyclerViewAdapter(mItem.getDetails()));
 
             detailView.addContentView(recyclerView);
+            detailView.setContentDefaultVisible(View.VISIBLE);
         }
         ExpandableView commentView = (ExpandableView) view.findViewById(R.id.id_item_comment_container);
         if (commentView != null) {
@@ -66,4 +64,5 @@ public class AccountItemViewFragment extends Fragment {
 
         return view;
     }
+
 }
