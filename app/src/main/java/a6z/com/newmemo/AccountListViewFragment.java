@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import a6z.com.newmemo.control.DividerItemDecoration;
 import a6z.com.newmemo.model.Account;
 import a6z.com.newmemo.model.Account.AccountItem;
 
@@ -21,7 +22,7 @@ import a6z.com.newmemo.model.Account.AccountItem;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class AccountListFragment extends Fragment {
+public class AccountListViewFragment extends Fragment {
 
     // TODO: Customize parameters
     private int mColumnCount = 1;
@@ -32,7 +33,7 @@ public class AccountListFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public AccountListFragment() {
+    public AccountListViewFragment() {
     }
 
     @Override
@@ -44,7 +45,7 @@ public class AccountListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_accountitem_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_account_list, container, false);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_account_list);
         // Set the adapter
@@ -57,7 +58,7 @@ public class AccountListFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             recyclerView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
-            recyclerView.setAdapter(new MyAccountItemRecyclerViewAdapter(Account.ITEMS, mListener));
+            recyclerView.setAdapter(new AccountListItemRecyclerViewAdapter(Account.ITEMS, mListener));
         }
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);

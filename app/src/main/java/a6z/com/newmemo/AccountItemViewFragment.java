@@ -11,18 +11,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import a6z.com.newmemo.control.ExpandableView;
 import a6z.com.newmemo.model.Account;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class AccountDetailActivityFragment extends Fragment {
+public class AccountItemViewFragment extends Fragment {
 
     public static final String ARG_TAG = "item_id";
 
     private Account.AccountItem mItem;
 
-    public AccountDetailActivityFragment() {
+    public AccountItemViewFragment() {
     }
 
     @Override
@@ -42,15 +43,27 @@ public class AccountDetailActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_account_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_account_item, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_item_detail_list);
-        if (recyclerView != null) {
-            Context context = view.getContext();
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            //recyclerView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
-            recyclerView.setAdapter(new MyAccountDetailRecyclerViewAdapter(mItem.getDetails()));
+        //RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_item_detail_list);
+        ExpandableView detailView = (ExpandableView) view.findViewById(R.id.id_item_detail_container);
+        if (detailView != null) {
+            detailView.fillData(R.drawable.ic_menu_send, "账号明细");
+            RecyclerView recyclerView = new RecyclerView(getContext());
+            if (recyclerView != null) {
+                Context context = view.getContext();
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                //recyclerView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
+                recyclerView.setAdapter(new AccountItemDetailRecyclerViewAdapter(mItem.getDetails()));
+            }
+
+            detailView.addContentView(recyclerView);
         }
+        ExpandableView commentView = (ExpandableView) view.findViewById(R.id.id_item_comment_container);
+        if (commentView != null) {
+            commentView.fillData(R.drawable.ic_menu_share, mItem.getComment());
+        }
+
         return view;
     }
 }

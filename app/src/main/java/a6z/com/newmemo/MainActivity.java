@@ -18,9 +18,9 @@ import a6z.com.newmemo.model.Account;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
-        , AccountListFragment.OnListFragmentInteractionListener {
+        , AccountListViewFragment.OnListFragmentInteractionListener {
 
-    private AccountListFragment accountFragment;
+    private AccountListViewFragment accountFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction transaction = fm.beginTransaction();
         if (key == R.id.nav_account) {
             if (accountFragment == null) {
-                accountFragment = new AccountListFragment();
+                accountFragment = new AccountListViewFragment();
             }
             transaction.replace(R.id.id_content, accountFragment);
         }/* else if (key == R.id.nav_calendar) {
@@ -122,8 +122,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(Account.AccountItem item) {
-        Intent intent = new Intent(this, AccountDetailActivity.class);
-        intent.putExtra(AccountDetailActivityFragment.ARG_TAG, item.getId());
+        Intent intent = new Intent(this, AccountItemActivity.class);
+        intent.putExtra(AccountItemViewFragment.ARG_TAG, item.getId());
+        //startActivity(intent);
+        //noinspection unchecked
         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
     }

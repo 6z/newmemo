@@ -11,16 +11,12 @@ import android.transition.Slide;
 import android.view.Gravity;
 import android.view.View;
 
-public class AccountDetailActivity extends AppCompatActivity {
+public class AccountItemActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_account_detail);
-
-        //Set activity animations
-        getWindow().setEnterTransition(new Slide(Gravity.RIGHT));
-        getWindow().setExitTransition(new Slide(Gravity.LEFT));
+        setContentView(R.layout.activity_account_item);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
@@ -44,7 +40,7 @@ public class AccountDetailActivity extends AppCompatActivity {
 
         CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         if (appBarLayout != null) {
-            appBarLayout.setTitle("标题");
+            appBarLayout.setTitle("账号标题");
         }
 
         // savedInstanceState is non-null when there is fragment state
@@ -60,13 +56,18 @@ public class AccountDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(AccountDetailActivityFragment.ARG_TAG,
-                    getIntent().getStringExtra(AccountDetailActivityFragment.ARG_TAG));
-            AccountDetailActivityFragment fragment = new AccountDetailActivityFragment();
+            arguments.putString(AccountItemViewFragment.ARG_TAG,
+                    getIntent().getStringExtra(AccountItemViewFragment.ARG_TAG));
+            AccountItemViewFragment fragment = new AccountItemViewFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.item_detail_container, fragment)
                     .commit();
         }
+
+        //Set activity animations
+        getWindow().setEnterTransition(new Slide(Gravity.RIGHT));
+        getWindow().setExitTransition(new Slide(Gravity.LEFT));
+
     }
 }

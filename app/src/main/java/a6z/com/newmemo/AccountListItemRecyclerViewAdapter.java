@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import a6z.com.newmemo.AccountListFragment.OnListFragmentInteractionListener;
+import a6z.com.newmemo.AccountListViewFragment.OnListFragmentInteractionListener;
 import a6z.com.newmemo.model.Account.AccountItem;
 
 /**
@@ -16,12 +16,12 @@ import a6z.com.newmemo.model.Account.AccountItem;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyAccountItemRecyclerViewAdapter extends RecyclerView.Adapter<MyAccountItemRecyclerViewAdapter.ViewHolder> {
+public class AccountListItemRecyclerViewAdapter extends RecyclerView.Adapter<AccountListItemRecyclerViewAdapter.ViewHolder> {
 
     private final List<AccountItem> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyAccountItemRecyclerViewAdapter(List<AccountItem> items, OnListFragmentInteractionListener listener) {
+    public AccountListItemRecyclerViewAdapter(List<AccountItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -29,7 +29,7 @@ public class MyAccountItemRecyclerViewAdapter extends RecyclerView.Adapter<MyAcc
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_accountitem, parent, false);
+                .inflate(R.layout.fragment_account_list_item_tpl, parent, false);
         return new ViewHolder(view);
     }
 

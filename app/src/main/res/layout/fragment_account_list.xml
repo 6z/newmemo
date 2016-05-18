@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="a6z.com.newmemo.AccountDetailActivityFragment">
+    tools:context=".AccountItemViewFragment">
 
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,8 +14,8 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         app:layoutManager="LinearLayoutManager"
-        tools:context=".AccountListFragment"
-        tools:listitem="@layout/fragment_accountitem" />
+        tools:context=".AccountListViewFragment"
+        tools:listitem="@layout/fragment_account_list_item_tpl" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

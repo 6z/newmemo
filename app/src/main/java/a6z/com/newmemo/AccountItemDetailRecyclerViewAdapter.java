@@ -1,6 +1,6 @@
 package a6z.com.newmemo;
 
-import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,18 +15,18 @@ import a6z.com.newmemo.model.Account;
 /**
  * 自定义账号详细里的列表适配器
  */
-public class MyAccountDetailRecyclerViewAdapter extends RecyclerView.Adapter<MyAccountDetailRecyclerViewAdapter.ViewHolder> {
+public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<AccountItemDetailRecyclerViewAdapter.ViewHolder> {
 
     private final List<Account.AccountDetail> items;
 
-    public MyAccountDetailRecyclerViewAdapter(List<Account.AccountDetail> items) {
+    public AccountItemDetailRecyclerViewAdapter(List<Account.AccountDetail> items) {
         this.items = items;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.frame_account_detail_item_content, parent, false);
+                .inflate(R.layout.fragment_account_item_detail_tpl, parent, false);
         return new ViewHolder(view);
     }
 
@@ -36,7 +36,8 @@ public class MyAccountDetailRecyclerViewAdapter extends RecyclerView.Adapter<MyA
         holder.mValueView.setText(items.get(position).getValue());
         //Drawable bitmap =holder.mRootView.getContext().getResources().getDrawable(R.drawable.ic_menu_camera,null);
         //holder.mLogView.setImageDrawable(bitmap);
-        holder.mLogView.setImageBitmap(BitmapDrawer.getFilledRect(40, 40, Color.argb(255, 153, 153, 153)));
+        holder.mLogView.setImageBitmap(BitmapDrawer.getFilledRect(40, 40,
+                ContextCompat.getColor(holder.mRootView.getContext(), R.color.colorItemLittleLogo)));
     }
 
     @Override

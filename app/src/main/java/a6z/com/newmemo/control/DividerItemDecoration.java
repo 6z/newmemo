@@ -1,4 +1,4 @@
-package a6z.com.newmemo;
+package a6z.com.newmemo.control;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.View;
+
+import a6z.com.newmemo.R;
 
 /**
  * Created by liuzhiguo on 16/5/10.
