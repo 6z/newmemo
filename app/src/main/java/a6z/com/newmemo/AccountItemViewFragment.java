@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import a6z.com.newmemo.control.ExpandableView;
 import a6z.com.newmemo.model.Account;
@@ -48,7 +49,7 @@ public class AccountItemViewFragment extends Fragment {
         //RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_item_detail_list);
         ExpandableView detailView = (ExpandableView) view.findViewById(R.id.id_item_detail_container);
         if (detailView != null) {
-            detailView.fillData(R.drawable.ic_menu_send, "账号明细");
+            detailView.fillData(R.drawable.ic_menu_send, "账号明细", true);
             RecyclerView recyclerView = new RecyclerView(getContext());
             Context context = view.getContext();
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -59,7 +60,10 @@ public class AccountItemViewFragment extends Fragment {
         }
         ExpandableView commentView = (ExpandableView) view.findViewById(R.id.id_item_comment_container);
         if (commentView != null) {
-            commentView.fillData(R.drawable.ic_menu_share, mItem.getComment());
+            commentView.fillData(R.drawable.ic_menu_share, "帐号说明", true);
+            TextView contentView = new TextView(getContext());
+            contentView.setText(mItem.getComment());
+            commentView.addContentView(contentView);
         }
 
         return view;

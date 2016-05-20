@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -96,6 +96,32 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        switch (resultCode) {
+            case RESULT_OK:
+                switch (requestCode) {
+                    case ViewTransaction.ACCOUNT_VIEW:
+                        int action = data.getIntExtra(ViewTransaction.ACTION_ARG_TAG, -1);
+                        if (action == ViewTransaction.ACTION_DEL) {
+                            accountFragment.removeItem(data.getStringExtra(AccountItemViewFragment.ARG_TAG));
+                        } else if (action == ViewTransaction.ACTION_MODIFY) {
+                            accountFragment.notifyItemChanged(data.getStringExtra(AccountItemViewFragment.ARG_TAG));
+                        }
+                        break;
+                    case ViewTransaction.ACCOUNT_EDIT:
+
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     private void showFragment(int key) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
@@ -126,7 +152,7 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(AccountItemViewFragment.ARG_TAG, item.getId());
         //startActivity(intent);
         //noinspection unchecked
-        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        startActivityForResult(intent, ViewTransaction.ACCOUNT_VIEW, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
     }
 }

@@ -9,20 +9,17 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Helper class for providing sample content for user interfaces created by
- * Android template wizards.
- * <p>
- * TODO: Replace all uses of this class before publishing your app.
+ * 账号数据模型.
  */
 public class Account {
 
     /**
-     * An array of sample (dummy) items.
+     * An array of account items.
      */
     public static final List<AccountItem> ITEMS = new ArrayList<>();
 
     /**
-     * A map of sample (dummy) items, by ID.
+     * A map of account items, by ID.
      */
     public static final Map<String, AccountItem> ITEM_MAP = new HashMap<>();
 
@@ -31,13 +28,51 @@ public class Account {
     static {
         // Add some sample items.
         for (int i = 1; i <= COUNT; i++) {
-            addItem(createDummyItem(i));
+            addItem(createDummyItem(i), i - 1);
         }
     }
 
-    private static void addItem(AccountItem item) {
-        ITEMS.add(item);
-        ITEM_MAP.put(item.id, item);
+    public static void addItem(AccountItem item, int position) {
+        ITEMS.add(position, item);
+        ITEM_MAP.put(item.getId(), item);
+    }
+
+    public static int removeItem(AccountItem item) {
+        return removeItem(item.getId());
+    }
+
+    public static int removeItem(String itemId) {
+        AccountItem accountItem = ITEM_MAP.get(itemId);
+        if (accountItem != null) {
+            int index = ITEMS.indexOf(accountItem);
+            ITEMS.remove(accountItem);
+            ITEM_MAP.remove(itemId);
+            return index;
+        }
+        return -1;
+    }
+
+    public static int indexOf(String itemId) {
+        AccountItem accountItem = ITEM_MAP.get(itemId);
+        if (accountItem != null) {
+            int index = ITEMS.indexOf(accountItem);
+            return index;
+        }
+        return -1;
+    }
+
+    public static AccountItem createItem(String title, String comments, List<AccountDetail> details) {
+        AccountItem item = new AccountItem(String.valueOf(ITEMS.size()));
+        item.setTitle(title);
+        item.setComment(comments);
+        item.clearDetails();
+        if (details != null) {
+            for (AccountDetail detailItem : details) {
+                item.addDetail(detailItem);
+            }
+        }
+        item.setUpdateTime(Calendar.getInstance());
+        return item;
     }
 
     private static AccountItem createDummyItem(int position) {
@@ -110,10 +145,19 @@ public class Account {
             return details;
         }
 
-        public void addDetail(String key, String value) {
-            AccountDetail item = AccountDetail.Create(key, value);
+        public void clearDetails() {
+            this.details.clear();
+            this.detailMap.clear();
+        }
+
+        public void addDetail(AccountDetail item) {
             this.details.add(item);
             this.detailMap.put(item.getId(), item);
+        }
+
+        public void addDetail(String key, String value) {
+            AccountDetail item = AccountDetail.Create(key, value);
+            addDetail(item);
         }
 
         public void removeDetail(String id) {

@@ -1,17 +1,21 @@
 package a6z.com.newmemo;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
 import android.view.Gravity;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class AccountItemActivity extends AppCompatActivity {
+
+    private boolean m_IsModified;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,17 +24,6 @@ public class AccountItemActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if (fab != null) {
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            });
-        }
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -69,5 +62,68 @@ public class AccountItemActivity extends AppCompatActivity {
         getWindow().setEnterTransition(new Slide(Gravity.RIGHT));
         getWindow().setExitTransition(new Slide(Gravity.LEFT));
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_account_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int menuId = item.getItemId();
+
+        //Toast.makeText(this, String.valueOf(menuId), Toast.LENGTH_SHORT).show();
+
+        if (menuId == R.id.action_edit) {
+            Intent intent = new Intent(this, AccountItemEditActivity.class);
+            intent.putExtra(AccountItemViewFragment.ARG_TAG, getIntent().getStringExtra(AccountItemViewFragment.ARG_TAG));
+            startActivityForResult(intent, ViewTransaction.ACCOUNT_EDIT);
+        } else if (menuId == android.R.id.home) {
+            if (m_IsModified) {
+                Intent intent = getIntent();
+                intent.putExtra(ViewTransaction.ACTION_ARG_TAG, ViewTransaction.ACCOUNT_EDIT);
+                setResult(RESULT_OK, intent);
+                AccountItemActivity.this.finishAfterTransition();
+            } else {
+                this.finishAfterTransition();
+            }
+        } else if (menuId == R.id.action_del) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("确认删除吗？");
+            builder.setTitle("提示");
+            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    Intent intent = getIntent();
+                    intent.putExtra(ViewTransaction.ACTION_ARG_TAG, ViewTransaction.ACTION_DEL);
+                    setResult(RESULT_OK, intent);
+                    AccountItemActivity.this.finishAfterTransition();
+                }
+
+            });
+            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+
+            });
+            builder.create().show();
+        }
+        return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode) {
+            case RESULT_OK:
+                m_IsModified = true;
+                break;
+            default:
+                break;
+        }
     }
 }

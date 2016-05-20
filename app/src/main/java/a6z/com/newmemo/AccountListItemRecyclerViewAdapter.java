@@ -9,6 +9,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import a6z.com.newmemo.AccountListViewFragment.OnListFragmentInteractionListener;
+import a6z.com.newmemo.model.Account;
 import a6z.com.newmemo.model.Account.AccountItem;
 
 /**
@@ -55,6 +56,32 @@ public class AccountListItemRecyclerViewAdapter extends RecyclerView.Adapter<Acc
     @Override
     public int getItemCount() {
         return mValues.size();
+    }
+
+    public void add(AccountItem item, int position) {
+        Account.addItem(item, position);
+        notifyItemInserted(position);
+    }
+
+    public void remove(AccountItem item) {
+        int position = Account.removeItem(item);
+        if (position >= 0) {
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void remove(String itemId) {
+        int position = Account.removeItem(itemId);
+        if (position >= 0) {
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void notifyItemChanged(String itemId) {
+        int position = Account.indexOf(itemId);
+        if (position >= 0) {
+            notifyItemChanged(position);
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

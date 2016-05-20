@@ -17,8 +17,8 @@ import a6z.com.newmemo.model.Account;
 import a6z.com.newmemo.model.Account.AccountItem;
 
 /**
- * A fragment representing a list of Items.
- * <p>
+ * 帐号列表 Fragment
+ * <p/>
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
@@ -29,10 +29,6 @@ public class AccountListViewFragment extends Fragment {
 
     private OnListFragmentInteractionListener mListener;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public AccountListViewFragment() {
     }
 
@@ -51,7 +47,6 @@ public class AccountListViewFragment extends Fragment {
         // Set the adapter
         if (recyclerView != null) {
             Context context = view.getContext();
-            //RecyclerView recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -66,6 +61,7 @@ public class AccountListViewFragment extends Fragment {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    addItem(Account.createItem("中国银行", "房贷还款", null));
                     Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
@@ -94,15 +90,36 @@ public class AccountListViewFragment extends Fragment {
         mListener = null;
     }
 
+    public void addItem(AccountItem item) {
+        RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.id_account_list);
+        if (recyclerView != null) {
+            ((AccountListItemRecyclerViewAdapter) recyclerView.getAdapter()).add(item, 0);
+        }
+    }
+
+    public void removeItem(AccountItem item) {
+        RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.id_account_list);
+        if (recyclerView != null) {
+            ((AccountListItemRecyclerViewAdapter) recyclerView.getAdapter()).remove(item);
+        }
+    }
+
+    public void removeItem(String itemId) {
+        RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.id_account_list);
+        if (recyclerView != null) {
+            ((AccountListItemRecyclerViewAdapter) recyclerView.getAdapter()).remove(itemId);
+        }
+    }
+
+    public void notifyItemChanged(String itemId) {
+        RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.id_account_list);
+        if (recyclerView != null) {
+            ((AccountListItemRecyclerViewAdapter) recyclerView.getAdapter()).notifyItemChanged(itemId);
+        }
+    }
+
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * 列表项被点击后的交互事件触发
      */
     public interface OnListFragmentInteractionListener {
         void onListFragmentInteraction(AccountItem item);
