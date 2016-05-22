@@ -24,7 +24,6 @@ import a6z.com.newmemo.model.Account.AccountItem;
  */
 public class AccountListViewFragment extends Fragment {
 
-    // TODO: Customize parameters
     private int mColumnCount = 1;
 
     private OnListFragmentInteractionListener mListener;

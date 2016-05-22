@@ -22,6 +22,8 @@ public class AccountItemViewFragment extends Fragment {
 
     public static final String ARG_TAG = "item_id";
 
+    private OnFragmentInteractionListener mListener;
+
     private Account.AccountItem mItem;
 
     public AccountItemViewFragment() {
@@ -49,24 +51,71 @@ public class AccountItemViewFragment extends Fragment {
         //RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_item_detail_list);
         ExpandableView detailView = (ExpandableView) view.findViewById(R.id.id_item_detail_container);
         if (detailView != null) {
-            detailView.fillData(R.drawable.ic_menu_send, "账号明细", true);
+            detailView.fillData(android.R.drawable.ic_menu_view, "账号明细", true);
+            detailView.setActionButton(R.drawable.ic_add_black, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        mListener.onItemDetailAddRequested();
+                    }
+                }
+            });
             RecyclerView recyclerView = new RecyclerView(getContext());
             Context context = view.getContext();
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new AccountItemDetailRecyclerViewAdapter(mItem.getDetails()));
+            recyclerView.setAdapter(new AccountItemDetailRecyclerViewAdapter(mItem, mListener));
 
             detailView.addContentView(recyclerView);
             detailView.setContentDefaultVisible(View.VISIBLE);
         }
         ExpandableView commentView = (ExpandableView) view.findViewById(R.id.id_item_comment_container);
         if (commentView != null) {
-            commentView.fillData(R.drawable.ic_menu_share, "帐号说明", true);
-            TextView contentView = new TextView(getContext());
-            contentView.setText(mItem.getComment());
+            commentView.fillData(android.R.drawable.ic_menu_info_details, "帐号说明", true);
+            commentView.setActionButton(R.drawable.ic_mode_edit_black, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        mListener.onItemCommentEditRequest(mItem.getComment());
+                    }
+                }
+            });
+            View contentView = inflater.inflate(R.layout.account_comment_view, commentView, false);
+            //TextView contentView = new TextView(getContext());
+            TextView contentTextView = (TextView) contentView.findViewById(R.id.id_comment);
+            contentTextView.setText(mItem.getComment());
             commentView.addContentView(contentView);
         }
 
         return view;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+
+    }
+
+    public void removeItemDetail(String detailId) {
+        ExpandableView detailView = (ExpandableView) getView().findViewById(R.id.id_item_detail_container);
+        RecyclerView recyclerView = (RecyclerView) detailView.getContentLayout().getChildAt(0);
+        AccountItemDetailRecyclerViewAdapter adapter = (AccountItemDetailRecyclerViewAdapter) recyclerView.getAdapter();
+        adapter.removeItem(detailId);
+    }
+
+    public interface OnFragmentInteractionListener {
+
+        public void onItemDetailEditRequested(Account.AccountDetail detail);
+
+        public void onItemDetailRemoveRequested(Account.AccountDetail detail);
+
+        public void onItemDetailAddRequested();
+
+        public void onItemCommentEditRequest(String comment);
+    }
 }

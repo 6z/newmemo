@@ -13,9 +13,13 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class AccountItemActivity extends AppCompatActivity {
+import a6z.com.newmemo.model.Account;
+
+public class AccountItemActivity extends AppCompatActivity implements AccountItemViewFragment.OnFragmentInteractionListener {
 
     private boolean m_IsModified;
+
+    private AccountItemViewFragment mAccountItemViewFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +55,10 @@ public class AccountItemActivity extends AppCompatActivity {
             Bundle arguments = new Bundle();
             arguments.putString(AccountItemViewFragment.ARG_TAG,
                     getIntent().getStringExtra(AccountItemViewFragment.ARG_TAG));
-            AccountItemViewFragment fragment = new AccountItemViewFragment();
-            fragment.setArguments(arguments);
+            mAccountItemViewFragment = new AccountItemViewFragment();
+            mAccountItemViewFragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.item_detail_container, fragment)
+                    .add(R.id.item_detail_container, mAccountItemViewFragment)
                     .commit();
         }
 
@@ -76,11 +80,12 @@ public class AccountItemActivity extends AppCompatActivity {
 
         //Toast.makeText(this, String.valueOf(menuId), Toast.LENGTH_SHORT).show();
 
-        if (menuId == R.id.action_edit) {
+        /*if (menuId == R.id.action_edit) {
             Intent intent = new Intent(this, AccountItemEditActivity.class);
             intent.putExtra(AccountItemViewFragment.ARG_TAG, getIntent().getStringExtra(AccountItemViewFragment.ARG_TAG));
             startActivityForResult(intent, ViewTransaction.ACCOUNT_EDIT);
-        } else if (menuId == android.R.id.home) {
+        } else*/
+        if (menuId == android.R.id.home) {
             if (m_IsModified) {
                 Intent intent = getIntent();
                 intent.putExtra(ViewTransaction.ACTION_ARG_TAG, ViewTransaction.ACCOUNT_EDIT);
@@ -125,5 +130,43 @@ public class AccountItemActivity extends AppCompatActivity {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onItemDetailEditRequested(Account.AccountDetail detail) {
+        Intent intent = new Intent(this, AccountItemDetailEditActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onItemDetailRemoveRequested(final Account.AccountDetail detail) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("确认删除吗？");
+        builder.setTitle("提示");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                mAccountItemViewFragment.removeItemDetail(detail.getId());
+            }
+
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    @Override
+    public void onItemDetailAddRequested() {
+
+    }
+
+    @Override
+    public void onItemCommentEditRequest(String comment) {
+
     }
 }

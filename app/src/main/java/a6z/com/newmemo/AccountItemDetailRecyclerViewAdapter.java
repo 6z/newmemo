@@ -5,11 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
-
+import a6z.com.newmemo.Utils.StringUtil;
 import a6z.com.newmemo.model.Account;
 
 /**
@@ -17,10 +17,12 @@ import a6z.com.newmemo.model.Account;
  */
 public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<AccountItemDetailRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Account.AccountDetail> items;
+    private final Account.AccountItem mAccountItem;
+    private AccountItemViewFragment.OnFragmentInteractionListener mListener;
 
-    public AccountItemDetailRecyclerViewAdapter(List<Account.AccountDetail> items) {
-        this.items = items;
+    public AccountItemDetailRecyclerViewAdapter(Account.AccountItem accountItem, AccountItemViewFragment.OnFragmentInteractionListener listener) {
+        this.mAccountItem = accountItem;
+        this.mListener = listener;
     }
 
     @Override
@@ -31,35 +33,60 @@ public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<A
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mNameView.setText(items.get(position).getName());
-        holder.mValueView.setText(items.get(position).getValue());
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        final Account.AccountDetail item = mAccountItem.getDetails().get(position);
+        holder.mNameView.setText(item.getName());
+        //绘制带下划线的文本
+        holder.mValueView.setText(StringUtil.getUnderlineString(item.getValue()));
         //Drawable bitmap =holder.mRootView.getContext().getResources().getDrawable(R.drawable.ic_menu_camera,null);
         //holder.mLogView.setImageDrawable(bitmap);
         holder.mLogView.setImageBitmap(BitmapDrawer.getFilledRect(40, 40,
-                ContextCompat.getColor(holder.mRootView.getContext(), R.color.colorItemLittleLogo)));
+                ContextCompat.getColor(holder.itemView.getContext(), R.color.colorItemLittleLogo)));
+        holder.mRemoveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onItemDetailRemoveRequested(item);
+                }
+            }
+        });
+        holder.mEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onItemDetailEditRequested(item);
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        if (items == null) {
+        if (mAccountItem.getDetails() == null) {
             return 0;
         }
-        return items.size();
+        return mAccountItem.getDetails().size();
+    }
+
+    public void removeItem(String itemId) {
+        int index = Account.removeItemDetail(mAccountItem.getId(), itemId);
+        notifyItemRemoved(index);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mRootView;
         public final TextView mNameView;
         public final TextView mValueView;
         public final ImageView mLogView;
+        public final ImageButton mRemoveButton;
+        public final ImageButton mEditButton;
 
         public ViewHolder(View view) {
             super(view);
-            mRootView = view;
             mNameView = (TextView) view.findViewById(R.id.id_name);
             mValueView = (TextView) view.findViewById(R.id.id_value);
             mLogView = (ImageView) view.findViewById(R.id.id_logImage);
+            mRemoveButton = (ImageButton) view.findViewById(R.id.remove_button);
+            mEditButton = (ImageButton) view.findViewById(R.id.edit_button);
         }
 
         @Override

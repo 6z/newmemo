@@ -21,5 +21,6 @@
 
     <style name="ExpandableView_TextView">
         <!-- Base style to customize inner TextView inside visible content -->
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 </resources>

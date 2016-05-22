@@ -39,9 +39,9 @@ public class AccountListItemRecyclerViewAdapter extends RecyclerView.Adapter<Acc
         holder.mItem = mValues.get(position);
         holder.mTitleView.setText(mValues.get(position).getTitle());
         holder.mCommentView.setText(mValues.get(position).getComment());
-        holder.mUpdateTimeView.setText(mValues.get(position).getFormattedUpdateTime(holder.mView.getContext().getString(R.string.time_format_pattern)));
+        holder.mUpdateTimeView.setText(mValues.get(position).getFormattedUpdateTime(holder.itemView.getContext().getString(R.string.time_format_pattern)));
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
@@ -85,7 +85,6 @@ public class AccountListItemRecyclerViewAdapter extends RecyclerView.Adapter<Acc
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
         public final TextView mTitleView;
         public final TextView mCommentView;
         public final TextView mUpdateTimeView;
@@ -93,7 +92,6 @@ public class AccountListItemRecyclerViewAdapter extends RecyclerView.Adapter<Acc
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
             mTitleView = (TextView) view.findViewById(R.id.id_title);
             mCommentView = (TextView) view.findViewById(R.id.id_comment);
             mUpdateTimeView = (TextView) view.findViewById(R.id.id_update_timestamp);

@@ -30,7 +30,8 @@
         <activity
             android:name=".AccountItemEditActivity"
             android:label="@string/title_activity_account_item_edit"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AccountItemDetailEditActivity"></activity>
     </application>
 
 </manifest>

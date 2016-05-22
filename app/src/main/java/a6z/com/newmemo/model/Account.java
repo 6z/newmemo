@@ -42,12 +42,19 @@ public class Account {
     }
 
     public static int removeItem(String itemId) {
-        AccountItem accountItem = ITEM_MAP.get(itemId);
+        AccountItem accountItem = ITEM_MAP.remove(itemId);
         if (accountItem != null) {
             int index = ITEMS.indexOf(accountItem);
             ITEMS.remove(accountItem);
-            ITEM_MAP.remove(itemId);
             return index;
+        }
+        return -1;
+    }
+
+    public static int removeItemDetail(String itemId, String detailId) {
+        AccountItem accountItem = ITEM_MAP.get(itemId);
+        if (accountItem != null) {
+            return accountItem.removeDetail(detailId);
         }
         return -1;
     }
@@ -81,7 +88,7 @@ public class Account {
         item.setComment(makeComments(position));
         item.setUpdateTime(Calendar.getInstance());
         for (int i = 1; i <= 5; i++) {
-            item.addDetail("key_" + i, "value_" + i);
+            item.addDetail("我没意见" + i, "你呢?" + i);
         }
         return item;
     }
@@ -93,7 +100,7 @@ public class Account {
     /**
      * A dummy item representing a piece of content.
      */
-    public static class AccountItem {
+    public static class AccountItem implements Cloneable {
         private String id;
         private String title;
         private String comment;
@@ -160,18 +167,35 @@ public class Account {
             addDetail(item);
         }
 
-        public void removeDetail(String id) {
+        public int removeDetail(String id) {
             AccountDetail item = this.detailMap.remove(id);
-            this.details.remove(item);
+            if (item != null) {
+                int index = details.indexOf(item);
+                this.details.remove(item);
+                return index;
+            }
+            return -1;
         }
 
         @Override
         public String toString() {
             return title;
         }
+
+        @Override
+        public Object clone() throws CloneNotSupportedException {
+            AccountItem newObj = new AccountItem(getId());
+            newObj.setTitle(getTitle());
+            newObj.setComment(getComment());
+            newObj.setUpdateTime(getUpdateTime());
+            for (AccountDetail detail : getDetails()) {
+                newObj.addDetail((AccountDetail) detail.clone());
+            }
+            return newObj;
+        }
     }
 
-    public static class AccountDetail {
+    public static class AccountDetail implements Cloneable {
         private String id;
         private String name;
         private String value;
@@ -197,6 +221,11 @@ public class Account {
 
         public String getValue() {
             return value;
+        }
+
+        @Override
+        public Object clone() throws CloneNotSupportedException {
+            return super.clone();
         }
     }
 }

@@ -10,6 +10,7 @@ import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -31,6 +32,8 @@ public class ExpandableView extends RelativeLayout {
     private float DEGREES;
 
     private TextView textView;
+
+    private ImageButton actionButton;
 
     private RelativeLayout clickableLayout;
 
@@ -76,6 +79,9 @@ public class ExpandableView extends RelativeLayout {
         contentLayout = (LinearLayout) findViewById(R.id.expandable_view_content_layout);
         leftIcon = (ImageView) findViewById(R.id.expandable_view_image);
         rightIcon = (ImageView) findViewById(R.id.expandable_view_right_icon);
+        actionButton = (ImageButton) findViewById(R.id.action_button);
+
+        actionButton.setVisibility(GONE);
 
         contentLayout.setVisibility(GONE);
 
@@ -224,6 +230,12 @@ public class ExpandableView extends RelativeLayout {
      */
     public void fillData(int leftResId, int stringResId) {
         fillData(leftResId, getResources().getString(stringResId), false);
+    }
+
+    public void setActionButton(int imgResId, OnClickListener clickListener) {
+        actionButton.setImageResource(imgResId);
+        actionButton.setVisibility(VISIBLE);
+        actionButton.setOnClickListener(clickListener);
     }
 
 
