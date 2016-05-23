@@ -18,7 +18,7 @@ import a6z.com.newmemo.model.Account;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
-        , AccountListViewFragment.OnListFragmentInteractionListener {
+        , AccountListViewFragment.OnFragmentInteractionListener {
 
     private AccountListViewFragment accountFragment;
 
@@ -102,15 +102,15 @@ public class MainActivity extends AppCompatActivity
         switch (resultCode) {
             case RESULT_OK:
                 switch (requestCode) {
-                    case ViewTransaction.ACCOUNT_VIEW:
-                        int action = data.getIntExtra(ViewTransaction.ACTION_ARG_TAG, -1);
+                    case ViewTransaction.PAGE_ACCOUNT_ITEM_VIEW:
+                        int action = data.getIntExtra(ViewTransaction.ACTION_ARG_TAG, ViewTransaction.ACTION_NONE);
                         if (action == ViewTransaction.ACTION_DEL) {
-                            accountFragment.removeItem(data.getStringExtra(AccountItemViewFragment.ARG_TAG));
+                            accountFragment.removeItem(data.getStringExtra(AccountItemViewActivity.ARG_TAG));
                         } else if (action == ViewTransaction.ACTION_MODIFY) {
-                            accountFragment.notifyItemChanged(data.getStringExtra(AccountItemViewFragment.ARG_TAG));
+                            accountFragment.notifyItemChanged(data.getStringExtra(AccountItemViewActivity.ARG_TAG));
                         }
                         break;
-                    case ViewTransaction.ACCOUNT_EDIT:
+                    case ViewTransaction.PAGE_ACCOUNT_ITEM_INFO_EDIT:
 
                         break;
                     default:
@@ -147,12 +147,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(Account.AccountItem item) {
-        Intent intent = new Intent(this, AccountItemActivity.class);
-        intent.putExtra(AccountItemViewFragment.ARG_TAG, item.getId());
+    public void onItemClicked(Account.AccountItem item) {
+        Intent intent = new Intent(this, AccountItemViewActivity.class);
+        intent.putExtra(AccountItemViewActivity.ARG_TAG, item.getId());
         //startActivity(intent);
         //noinspection unchecked
-        startActivityForResult(intent, ViewTransaction.ACCOUNT_VIEW, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        startActivityForResult(intent, ViewTransaction.PAGE_ACCOUNT_ITEM_VIEW, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
     }
 }

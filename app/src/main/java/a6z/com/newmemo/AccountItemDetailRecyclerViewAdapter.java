@@ -18,9 +18,9 @@ import a6z.com.newmemo.model.Account;
 public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<AccountItemDetailRecyclerViewAdapter.ViewHolder> {
 
     private final Account.AccountItem mAccountItem;
-    private AccountItemViewFragment.OnFragmentInteractionListener mListener;
+    private OnInteractionListener mListener;
 
-    public AccountItemDetailRecyclerViewAdapter(Account.AccountItem accountItem, AccountItemViewFragment.OnFragmentInteractionListener listener) {
+    public AccountItemDetailRecyclerViewAdapter(Account.AccountItem accountItem, OnInteractionListener listener) {
         this.mAccountItem = accountItem;
         this.mListener = listener;
     }
@@ -28,7 +28,7 @@ public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<A
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_account_item_detail_tpl, parent, false);
+                .inflate(R.layout.account_item_detail_tpl, parent, false);
         return new ViewHolder(view);
     }
 
@@ -68,9 +68,32 @@ public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<A
         return mAccountItem.getDetails().size();
     }
 
+    public void addItem(String name, String value) {
+        int index = Account.addItemDetail(mAccountItem.getId(), name, value);
+        if (index >= 0) {
+            notifyItemInserted(index);
+        }
+    }
+
     public void removeItem(String itemId) {
         int index = Account.removeItemDetail(mAccountItem.getId(), itemId);
-        notifyItemRemoved(index);
+        if (index >= 0) {
+            notifyItemRemoved(index);
+        }
+    }
+
+    public void modifyItem(String itemId, String name, String value) {
+        int index = Account.modifyItemDetail(mAccountItem.getId(), itemId, name, value);
+        if (index >= 0) {
+            notifyItemChanged(index);
+        }
+    }
+
+    public interface OnInteractionListener {
+
+        void onItemDetailEditRequested(Account.AccountDetail detail);
+
+        void onItemDetailRemoveRequested(Account.AccountDetail detail);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

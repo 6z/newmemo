@@ -19,14 +19,14 @@ import a6z.com.newmemo.model.Account.AccountItem;
 /**
  * 帐号列表 Fragment
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
 public class AccountListViewFragment extends Fragment {
 
     private int mColumnCount = 1;
 
-    private OnListFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener;
 
     public AccountListViewFragment() {
     }
@@ -52,7 +52,7 @@ public class AccountListViewFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             recyclerView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
-            recyclerView.setAdapter(new AccountListItemRecyclerViewAdapter(Account.ITEMS, mListener));
+            recyclerView.setAdapter(new AccountListViewItemRecyclerViewAdapter(Account.ITEMS, mListener));
         }
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
@@ -74,11 +74,11 @@ public class AccountListViewFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+                    + " must implement OnFragmentInteractionListener");
         }
 
     }
@@ -92,35 +92,35 @@ public class AccountListViewFragment extends Fragment {
     public void addItem(AccountItem item) {
         RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.id_account_list);
         if (recyclerView != null) {
-            ((AccountListItemRecyclerViewAdapter) recyclerView.getAdapter()).add(item, 0);
+            ((AccountListViewItemRecyclerViewAdapter) recyclerView.getAdapter()).add(item, 0);
         }
     }
 
     public void removeItem(AccountItem item) {
         RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.id_account_list);
         if (recyclerView != null) {
-            ((AccountListItemRecyclerViewAdapter) recyclerView.getAdapter()).remove(item);
+            ((AccountListViewItemRecyclerViewAdapter) recyclerView.getAdapter()).remove(item);
         }
     }
 
     public void removeItem(String itemId) {
         RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.id_account_list);
         if (recyclerView != null) {
-            ((AccountListItemRecyclerViewAdapter) recyclerView.getAdapter()).remove(itemId);
+            ((AccountListViewItemRecyclerViewAdapter) recyclerView.getAdapter()).remove(itemId);
         }
     }
 
     public void notifyItemChanged(String itemId) {
         RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.id_account_list);
         if (recyclerView != null) {
-            ((AccountListItemRecyclerViewAdapter) recyclerView.getAdapter()).notifyItemChanged(itemId);
+            ((AccountListViewItemRecyclerViewAdapter) recyclerView.getAdapter()).notifyItemChanged(itemId);
         }
     }
 
     /**
      * 列表项被点击后的交互事件触发
      */
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(AccountItem item);
+    public interface OnFragmentInteractionListener {
+        void onItemClicked(AccountItem item);
     }
 }

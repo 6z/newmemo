@@ -51,10 +51,27 @@ public class Account {
         return -1;
     }
 
+    public static int addItemDetail(String itemId, String detailName, String detailValue) {
+        AccountItem accountItem = ITEM_MAP.get(itemId);
+        if (accountItem != null) {
+            accountItem.addDetail(detailName, detailValue);
+            return accountItem.getDetailListSize() - 1;
+        }
+        return -1;
+    }
+
     public static int removeItemDetail(String itemId, String detailId) {
         AccountItem accountItem = ITEM_MAP.get(itemId);
         if (accountItem != null) {
             return accountItem.removeDetail(detailId);
+        }
+        return -1;
+    }
+
+    public static int modifyItemDetail(String itemId, String detailId, String name, String value) {
+        AccountItem accountItem = ITEM_MAP.get(itemId);
+        if (accountItem != null) {
+            return accountItem.modifyDetail(detailId, name, value);
         }
         return -1;
     }
@@ -152,6 +169,10 @@ public class Account {
             return details;
         }
 
+        public int getDetailListSize() {
+            return details.size();
+        }
+
         public void clearDetails() {
             this.details.clear();
             this.detailMap.clear();
@@ -172,6 +193,17 @@ public class Account {
             if (item != null) {
                 int index = details.indexOf(item);
                 this.details.remove(item);
+                return index;
+            }
+            return -1;
+        }
+
+        public int modifyDetail(String id, String name, String value) {
+            AccountDetail item = this.detailMap.get(id);
+            if (item != null) {
+                int index = details.indexOf(item);
+                item.setName(name);
+                item.setValue(value);
                 return index;
             }
             return -1;
@@ -219,8 +251,16 @@ public class Account {
             return name;
         }
 
+        public void setName(String value) {
+            this.name = value;
+        }
+
         public String getValue() {
             return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
         }
 
         @Override

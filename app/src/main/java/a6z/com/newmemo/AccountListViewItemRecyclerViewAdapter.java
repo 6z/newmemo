@@ -8,21 +8,21 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import a6z.com.newmemo.AccountListViewFragment.OnListFragmentInteractionListener;
+import a6z.com.newmemo.AccountListViewFragment.OnFragmentInteractionListener;
 import a6z.com.newmemo.model.Account;
 import a6z.com.newmemo.model.Account.AccountItem;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link AccountItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link OnFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class AccountListItemRecyclerViewAdapter extends RecyclerView.Adapter<AccountListItemRecyclerViewAdapter.ViewHolder> {
+public class AccountListViewItemRecyclerViewAdapter extends RecyclerView.Adapter<AccountListViewItemRecyclerViewAdapter.ViewHolder> {
 
     private final List<AccountItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final OnFragmentInteractionListener mListener;
 
-    public AccountListItemRecyclerViewAdapter(List<AccountItem> items, OnListFragmentInteractionListener listener) {
+    public AccountListViewItemRecyclerViewAdapter(List<AccountItem> items, OnFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -47,7 +47,7 @@ public class AccountListItemRecyclerViewAdapter extends RecyclerView.Adapter<Acc
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onItemClicked(holder.mItem);
                 }
             }
         });

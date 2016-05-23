@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".AccountItemActivity"
+    tools:context=".AccountItemViewActivity"
     tools:ignore="MergeRootFrame">
 
     <android.support.design.widget.AppBarLayout
@@ -39,6 +39,26 @@
         android:id="@+id/item_detail_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"></android.support.v4.widget.NestedScrollView>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <a6z.com.newmemo.control.ExpandableView
+                android:id="@+id/id_item_detail_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <a6z.com.newmemo.control.ExpandableView
+                android:id="@+id/id_item_comment_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

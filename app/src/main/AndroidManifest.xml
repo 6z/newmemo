@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AccountItemActivity"
+            android:name=".AccountItemViewActivity"
             android:label="@string/title_activity_account_detail"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -27,10 +27,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="a6z.com.newmemo.MainActivity" />
         </activity>
-        <activity
-            android:name=".AccountItemEditActivity"
-            android:label="@string/title_activity_account_item_edit"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".AccountItemDetailEditActivity"></activity>
     </application>
 

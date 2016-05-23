@@ -1,5 +1,6 @@
 package a6z.com.newmemo;
 
+import android.app.ActivityOptions;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,19 +8,31 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
+import a6z.com.newmemo.control.ExpandableView;
 import a6z.com.newmemo.model.Account;
 
-public class AccountItemActivity extends AppCompatActivity implements AccountItemViewFragment.OnFragmentInteractionListener {
+public class AccountItemViewActivity extends AppCompatActivity implements AccountItemDetailRecyclerViewAdapter.OnInteractionListener {
+
+    public static final String ARG_TAG = "item_id";
+
+    private Account.AccountItem mItem;
 
     private boolean m_IsModified;
 
-    private AccountItemViewFragment mAccountItemViewFragment;
+    private ExpandableView mDetailView;
+    private ExpandableView mCommentView;
+
+    //private AccountItemViewFragment mAccountItemViewFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +48,13 @@ public class AccountItemActivity extends AppCompatActivity implements AccountIte
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        Intent intent = getIntent();
+
+        mItem = Account.ITEM_MAP.get(intent.getStringExtra(ARG_TAG));
+
         CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         if (appBarLayout != null) {
-            appBarLayout.setTitle("账号标题");
+            appBarLayout.setTitle(mItem.getTitle());
         }
 
         // savedInstanceState is non-null when there is fragment state
@@ -50,22 +67,56 @@ public class AccountItemActivity extends AppCompatActivity implements AccountIte
         // http://developer.android.com/guide/components/fragments.html
         //
         if (savedInstanceState == null) {
+            initView();
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            Bundle arguments = new Bundle();
+            /*Bundle arguments = new Bundle();
             arguments.putString(AccountItemViewFragment.ARG_TAG,
                     getIntent().getStringExtra(AccountItemViewFragment.ARG_TAG));
             mAccountItemViewFragment = new AccountItemViewFragment();
             mAccountItemViewFragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.item_detail_container, mAccountItemViewFragment)
-                    .commit();
+                    .commit();*/
         }
 
         //Set activity animations
         getWindow().setEnterTransition(new Slide(Gravity.RIGHT));
         getWindow().setExitTransition(new Slide(Gravity.LEFT));
 
+    }
+
+    private void initView() {
+        mDetailView = (ExpandableView) findViewById(R.id.id_item_detail_container);
+        if (mDetailView != null) {
+            mDetailView.fillData(android.R.drawable.ic_menu_view, "账号明细", true);
+            mDetailView.setActionButton(R.drawable.ic_add_black, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemDetailAddRequested();
+                }
+            });
+            RecyclerView recyclerView = new RecyclerView(this);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(new AccountItemDetailRecyclerViewAdapter(mItem, this));
+
+            mDetailView.addContentView(recyclerView);
+            mDetailView.setContentDefaultVisible(View.VISIBLE);
+        }
+        mCommentView = (ExpandableView) findViewById(R.id.id_item_comment_container);
+        if (mCommentView != null) {
+            mCommentView.fillData(android.R.drawable.ic_menu_info_details, "帐号说明", true);
+            mCommentView.setActionButton(R.drawable.ic_mode_edit_black, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemCommentEditRequest(mItem.getComment());
+                }
+            });
+            View contentView = getLayoutInflater().inflate(R.layout.account_comment_view, mCommentView, false);
+            TextView contentTextView = (TextView) contentView.findViewById(R.id.id_comment);
+            contentTextView.setText(mItem.getComment());
+            mCommentView.addContentView(contentView);
+        }
     }
 
     @Override
@@ -88,9 +139,9 @@ public class AccountItemActivity extends AppCompatActivity implements AccountIte
         if (menuId == android.R.id.home) {
             if (m_IsModified) {
                 Intent intent = getIntent();
-                intent.putExtra(ViewTransaction.ACTION_ARG_TAG, ViewTransaction.ACCOUNT_EDIT);
+                intent.putExtra(ViewTransaction.ACTION_ARG_TAG, ViewTransaction.ACTION_MODIFY);
                 setResult(RESULT_OK, intent);
-                AccountItemActivity.this.finishAfterTransition();
+                this.finishAfterTransition();
             } else {
                 this.finishAfterTransition();
             }
@@ -105,7 +156,7 @@ public class AccountItemActivity extends AppCompatActivity implements AccountIte
                     Intent intent = getIntent();
                     intent.putExtra(ViewTransaction.ACTION_ARG_TAG, ViewTransaction.ACTION_DEL);
                     setResult(RESULT_OK, intent);
-                    AccountItemActivity.this.finishAfterTransition();
+                    AccountItemViewActivity.this.finishAfterTransition();
                 }
 
             });
@@ -123,19 +174,38 @@ public class AccountItemActivity extends AppCompatActivity implements AccountIte
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (resultCode) {
-            case RESULT_OK:
-                m_IsModified = true;
-                break;
-            default:
-                break;
+        //处理 帐号详情 编辑返回逻辑
+        if (requestCode == ViewTransaction.PAGE_ACCOUNT_ITEM_DETAIL_EDIT) {
+            if (RESULT_OK != resultCode) {
+                return;
+            }
+            int action = data.getIntExtra(ViewTransaction.ACTION_ARG_TAG, ViewTransaction.ACTION_NONE);
+            if (action == ViewTransaction.ACTION_NONE) {
+                return;
+            }
+            String name = data.getStringExtra(AccountItemDetailEditActivity.NAME_ARG_TAG);
+            String value = data.getStringExtra(AccountItemDetailEditActivity.VALUE_ARG_TAG);
+            //m_IsModified = true;
+            if (action == ViewTransaction.ACTION_MODIFY) {
+                String id = data.getStringExtra(AccountItemDetailEditActivity.ID_ARG_TAG);
+                modifyItemDetail(id, name, value);
+            } else if (action == ViewTransaction.ACTION_NEW) {
+                addItemDetail(name, value);
+            }
+        } else if (requestCode == ViewTransaction.PAGE_ACCOUNT_ITEM_INFO_EDIT) {
+            m_IsModified = true;
         }
+
     }
 
     @Override
     public void onItemDetailEditRequested(Account.AccountDetail detail) {
         Intent intent = new Intent(this, AccountItemDetailEditActivity.class);
-        startActivity(intent);
+        intent.putExtra(AccountItemDetailEditActivity.ID_ARG_TAG, detail.getId());
+        intent.putExtra(AccountItemDetailEditActivity.NAME_ARG_TAG, detail.getName());
+        intent.putExtra(AccountItemDetailEditActivity.VALUE_ARG_TAG, detail.getValue());
+
+        startActivityForResult(intent, ViewTransaction.PAGE_ACCOUNT_ITEM_DETAIL_EDIT, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 
     @Override
@@ -147,7 +217,7 @@ public class AccountItemActivity extends AppCompatActivity implements AccountIte
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                mAccountItemViewFragment.removeItemDetail(detail.getId());
+                removeItemDetail(detail.getId());
             }
 
         });
@@ -160,13 +230,30 @@ public class AccountItemActivity extends AppCompatActivity implements AccountIte
         builder.create().show();
     }
 
-    @Override
     public void onItemDetailAddRequested() {
+        Intent intent = new Intent(this, AccountItemDetailEditActivity.class);
+        startActivityForResult(intent, ViewTransaction.PAGE_ACCOUNT_ITEM_DETAIL_EDIT, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+    }
+
+    public void onItemCommentEditRequest(String comment) {
 
     }
 
-    @Override
-    public void onItemCommentEditRequest(String comment) {
+    private void addItemDetail(String name, String value) {
+        RecyclerView recyclerView = (RecyclerView) mDetailView.getContentLayout().getChildAt(0);
+        AccountItemDetailRecyclerViewAdapter adapter = (AccountItemDetailRecyclerViewAdapter) recyclerView.getAdapter();
+        adapter.addItem(name, value);
+    }
 
+    private void removeItemDetail(String detailId) {
+        RecyclerView recyclerView = (RecyclerView) mDetailView.getContentLayout().getChildAt(0);
+        AccountItemDetailRecyclerViewAdapter adapter = (AccountItemDetailRecyclerViewAdapter) recyclerView.getAdapter();
+        adapter.removeItem(detailId);
+    }
+
+    private void modifyItemDetail(String detailId, String name, String value) {
+        RecyclerView recyclerView = (RecyclerView) mDetailView.getContentLayout().getChildAt(0);
+        AccountItemDetailRecyclerViewAdapter adapter = (AccountItemDetailRecyclerViewAdapter) recyclerView.getAdapter();
+        adapter.modifyItem(detailId, name, value);
     }
 }
