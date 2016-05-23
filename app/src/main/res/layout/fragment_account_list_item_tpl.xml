@@ -32,6 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_margin"
+                android:singleLine="true"
                 android:text="你的微笑"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
@@ -40,6 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_margin"
+                android:singleLine="true"
                 android:text="最美的信号"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 

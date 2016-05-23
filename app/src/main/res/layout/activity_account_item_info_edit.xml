@@ -8,12 +8,12 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="a6z.com.newmemo.AccountItemDetailEditActivity">
+    tools:context="a6z.com.newmemo.AccountItemInfoEditActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="项目名:"
+        android:text="账号名:"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
@@ -21,23 +21,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:hint="请输入项目名"
+        android:hint="请输入帐号名"
         android:singleLine="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="项目值:"
+        android:text="项目说明:"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
-        android:id="@+id/id_value"
+        android:id="@+id/id_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:hint="请输入项目值"
-        android:singleLine="true"
+        android:ems="10"
+        android:hint="请输入说明"
+        android:inputType="textMultiLine"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <LinearLayout

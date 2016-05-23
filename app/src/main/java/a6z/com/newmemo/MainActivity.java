@@ -101,9 +101,9 @@ public class MainActivity extends AppCompatActivity
         //super.onActivityResult(requestCode, resultCode, data);
         switch (resultCode) {
             case RESULT_OK:
+                int action = data.getIntExtra(ViewTransaction.ACTION_ARG_TAG, ViewTransaction.ACTION_NONE);
                 switch (requestCode) {
                     case ViewTransaction.PAGE_ACCOUNT_ITEM_VIEW:
-                        int action = data.getIntExtra(ViewTransaction.ACTION_ARG_TAG, ViewTransaction.ACTION_NONE);
                         if (action == ViewTransaction.ACTION_DEL) {
                             accountFragment.removeItem(data.getStringExtra(AccountItemViewActivity.ARG_TAG));
                         } else if (action == ViewTransaction.ACTION_MODIFY) {
@@ -111,7 +111,13 @@ public class MainActivity extends AppCompatActivity
                         }
                         break;
                     case ViewTransaction.PAGE_ACCOUNT_ITEM_INFO_EDIT:
-
+                        if (action == ViewTransaction.ACTION_NEW) {
+                            String title = data.getStringExtra(AccountItemInfoEditActivity.NAME_ARG_TAG);
+                            String comment = data.getStringExtra(AccountItemInfoEditActivity.COMMENT_ARG_TAG);
+                            Account.AccountItem item = Account.createItem(title, comment, null);
+                            accountFragment.addItem(item);
+                            onItemClicked(item);
+                        }
                         break;
                     default:
                         break;
@@ -150,9 +156,14 @@ public class MainActivity extends AppCompatActivity
     public void onItemClicked(Account.AccountItem item) {
         Intent intent = new Intent(this, AccountItemViewActivity.class);
         intent.putExtra(AccountItemViewActivity.ARG_TAG, item.getId());
-        //startActivity(intent);
         //noinspection unchecked
         startActivityForResult(intent, ViewTransaction.PAGE_ACCOUNT_ITEM_VIEW, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-        //Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onAddItemRequest() {
+        Intent intent = new Intent(this, AccountItemInfoEditActivity.class);
+        //noinspection unchecked
+        startActivityForResult(intent, ViewTransaction.PAGE_ACCOUNT_ITEM_INFO_EDIT, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 }

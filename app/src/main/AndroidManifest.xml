@@ -27,7 +27,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="a6z.com.newmemo.MainActivity" />
         </activity>
-        <activity android:name=".AccountItemDetailEditActivity"></activity>
+        <activity android:name=".AccountItemDetailEditActivity" />
+        <activity android:name=".AccountItemInfoEditActivity"></activity>
     </application>
 
 </manifest>

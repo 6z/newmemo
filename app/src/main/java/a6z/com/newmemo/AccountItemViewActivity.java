@@ -29,8 +29,9 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
 
     private boolean m_IsModified;
 
-    private ExpandableView mDetailView;
-    private ExpandableView mCommentView;
+    private CollapsingToolbarLayout mAppBarLayout;
+    private RecyclerView mDetailView;
+    private TextView mCommentView;
 
     //private AccountItemViewFragment mAccountItemViewFragment;
 
@@ -52,9 +53,9 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
 
         mItem = Account.ITEM_MAP.get(intent.getStringExtra(ARG_TAG));
 
-        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-        if (appBarLayout != null) {
-            appBarLayout.setTitle(mItem.getTitle());
+        mAppBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+        if (mAppBarLayout != null) {
+            mAppBarLayout.setTitle(mItem.getTitle());
         }
 
         // savedInstanceState is non-null when there is fragment state
@@ -87,41 +88,37 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
     }
 
     private void initView() {
-        mDetailView = (ExpandableView) findViewById(R.id.id_item_detail_container);
-        if (mDetailView != null) {
-            mDetailView.fillData(android.R.drawable.ic_menu_view, "账号明细", true);
-            mDetailView.setActionButton(R.drawable.ic_add_black, new View.OnClickListener() {
+        ExpandableView detailContainerView = (ExpandableView) findViewById(R.id.id_item_detail_container);
+        if (detailContainerView != null) {
+            detailContainerView.fillData(android.R.drawable.ic_menu_view, "账号明细", true);
+            detailContainerView.setActionButton(R.drawable.ic_add_black, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     onItemDetailAddRequested();
                 }
             });
-            RecyclerView recyclerView = new RecyclerView(this);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.setAdapter(new AccountItemDetailRecyclerViewAdapter(mItem, this));
+            mDetailView = new RecyclerView(this);
+            mDetailView.setLayoutManager(new LinearLayoutManager(this));
+            mDetailView.setAdapter(new AccountItemDetailRecyclerViewAdapter(mItem, this));
 
-            mDetailView.addContentView(recyclerView);
-            mDetailView.setContentDefaultVisible(View.VISIBLE);
+            detailContainerView.addContentView(mDetailView);
+            detailContainerView.setContentDefaultVisible(View.VISIBLE);
         }
-        mCommentView = (ExpandableView) findViewById(R.id.id_item_comment_container);
-        if (mCommentView != null) {
-            mCommentView.fillData(android.R.drawable.ic_menu_info_details, "帐号说明", true);
-            mCommentView.setActionButton(R.drawable.ic_mode_edit_black, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemCommentEditRequest(mItem.getComment());
-                }
-            });
-            View contentView = getLayoutInflater().inflate(R.layout.account_comment_view, mCommentView, false);
-            TextView contentTextView = (TextView) contentView.findViewById(R.id.id_comment);
-            contentTextView.setText(mItem.getComment());
-            mCommentView.addContentView(contentView);
+        ExpandableView commentContainerView = (ExpandableView) findViewById(R.id.id_item_comment_container);
+        if (commentContainerView != null) {
+            commentContainerView.fillData(android.R.drawable.ic_menu_info_details, "帐号说明", true);
+            View contentView = getLayoutInflater().inflate(R.layout.account_comment_view, commentContainerView, false);
+            mCommentView = (TextView) contentView.findViewById(R.id.id_comment);
+            mCommentView.setText(mItem.getComment());
+            commentContainerView.addContentView(contentView);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_account_detail, menu);
+
+        //MenuItem delMenu = menu.findItem(R.id.action_del);
         return true;
     }
 
@@ -129,13 +126,6 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
     public boolean onOptionsItemSelected(MenuItem item) {
         int menuId = item.getItemId();
 
-        //Toast.makeText(this, String.valueOf(menuId), Toast.LENGTH_SHORT).show();
-
-        /*if (menuId == R.id.action_edit) {
-            Intent intent = new Intent(this, AccountItemEditActivity.class);
-            intent.putExtra(AccountItemViewFragment.ARG_TAG, getIntent().getStringExtra(AccountItemViewFragment.ARG_TAG));
-            startActivityForResult(intent, ViewTransaction.ACCOUNT_EDIT);
-        } else*/
         if (menuId == android.R.id.home) {
             if (m_IsModified) {
                 Intent intent = getIntent();
@@ -168,6 +158,8 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
 
             });
             builder.create().show();
+        } else if (menuId == R.id.action_modify) {
+            onItemBaseInfoEditRequest();
         }
         return true;
     }
@@ -185,7 +177,6 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
             }
             String name = data.getStringExtra(AccountItemDetailEditActivity.NAME_ARG_TAG);
             String value = data.getStringExtra(AccountItemDetailEditActivity.VALUE_ARG_TAG);
-            //m_IsModified = true;
             if (action == ViewTransaction.ACTION_MODIFY) {
                 String id = data.getStringExtra(AccountItemDetailEditActivity.ID_ARG_TAG);
                 modifyItemDetail(id, name, value);
@@ -193,6 +184,19 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
                 addItemDetail(name, value);
             }
         } else if (requestCode == ViewTransaction.PAGE_ACCOUNT_ITEM_INFO_EDIT) {
+            if (RESULT_OK != resultCode) {
+                return;
+            }
+            int action = data.getIntExtra(ViewTransaction.ACTION_ARG_TAG, ViewTransaction.ACTION_NONE);
+            if (action != ViewTransaction.ACTION_MODIFY) {
+                return;
+            }
+            String title = data.getStringExtra(AccountItemInfoEditActivity.NAME_ARG_TAG);
+            String comment = data.getStringExtra(AccountItemInfoEditActivity.COMMENT_ARG_TAG);
+            if (mAppBarLayout != null) {
+                mAppBarLayout.setTitle(title);
+            }
+            modifyItem(title, comment);
             m_IsModified = true;
         }
 
@@ -235,25 +239,34 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
         startActivityForResult(intent, ViewTransaction.PAGE_ACCOUNT_ITEM_DETAIL_EDIT, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 
-    public void onItemCommentEditRequest(String comment) {
+    public void onItemBaseInfoEditRequest() {
+        Intent intent = new Intent(this, AccountItemInfoEditActivity.class);
+        intent.putExtra(AccountItemInfoEditActivity.ID_ARG_TAG, mItem.getId());
+        intent.putExtra(AccountItemInfoEditActivity.NAME_ARG_TAG, mItem.getTitle());
+        intent.putExtra(AccountItemInfoEditActivity.COMMENT_ARG_TAG, mItem.getComment());
 
+        startActivityForResult(intent, ViewTransaction.PAGE_ACCOUNT_ITEM_INFO_EDIT, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 
     private void addItemDetail(String name, String value) {
-        RecyclerView recyclerView = (RecyclerView) mDetailView.getContentLayout().getChildAt(0);
-        AccountItemDetailRecyclerViewAdapter adapter = (AccountItemDetailRecyclerViewAdapter) recyclerView.getAdapter();
+        AccountItemDetailRecyclerViewAdapter adapter = (AccountItemDetailRecyclerViewAdapter) mDetailView.getAdapter();
         adapter.addItem(name, value);
     }
 
     private void removeItemDetail(String detailId) {
-        RecyclerView recyclerView = (RecyclerView) mDetailView.getContentLayout().getChildAt(0);
-        AccountItemDetailRecyclerViewAdapter adapter = (AccountItemDetailRecyclerViewAdapter) recyclerView.getAdapter();
+        AccountItemDetailRecyclerViewAdapter adapter = (AccountItemDetailRecyclerViewAdapter) mDetailView.getAdapter();
         adapter.removeItem(detailId);
     }
 
     private void modifyItemDetail(String detailId, String name, String value) {
-        RecyclerView recyclerView = (RecyclerView) mDetailView.getContentLayout().getChildAt(0);
-        AccountItemDetailRecyclerViewAdapter adapter = (AccountItemDetailRecyclerViewAdapter) recyclerView.getAdapter();
+        AccountItemDetailRecyclerViewAdapter adapter = (AccountItemDetailRecyclerViewAdapter) mDetailView.getAdapter();
         adapter.modifyItem(detailId, name, value);
+    }
+
+    private void modifyItem(String title, String comment) {
+        mItem.setTitle(title);
+        mItem.setComment(comment);
+        mAppBarLayout.setTitle(title);
+        mCommentView.setText(comment);
     }
 }

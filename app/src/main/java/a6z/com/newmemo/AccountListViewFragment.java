@@ -3,7 +3,6 @@ package a6z.com.newmemo;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -60,9 +59,12 @@ public class AccountListViewFragment extends Fragment {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addItem(Account.createItem("中国银行", "房贷还款", null));
+                    if (mListener != null) {
+                        mListener.onAddItemRequest();
+                    }
+                    /*addItem(Account.createItem("中国银行", "房贷还款", null));
                     Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                            .setAction("Action", null).show();*/
                 }
             });
         }
@@ -92,7 +94,9 @@ public class AccountListViewFragment extends Fragment {
     public void addItem(AccountItem item) {
         RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.id_account_list);
         if (recyclerView != null) {
-            ((AccountListViewItemRecyclerViewAdapter) recyclerView.getAdapter()).add(item, 0);
+            int insertPosition = 0;
+            ((AccountListViewItemRecyclerViewAdapter) recyclerView.getAdapter()).add(item, insertPosition);
+            recyclerView.scrollToPosition(insertPosition);
         }
     }
 
@@ -122,5 +126,7 @@ public class AccountListViewFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onItemClicked(AccountItem item);
+
+        void onAddItemRequest();
     }
 }

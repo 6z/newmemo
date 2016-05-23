@@ -37,6 +37,17 @@ public class Account {
         ITEM_MAP.put(item.getId(), item);
     }
 
+    public static int modifyItem(String id, String title, String comment) {
+        AccountItem item = ITEM_MAP.get(id);
+        if (item != null) {
+            int index = ITEMS.indexOf(item);
+            item.setTitle(title);
+            item.setComment(comment);
+            return index;
+        }
+        return -1;
+    }
+
     public static int removeItem(AccountItem item) {
         return removeItem(item.getId());
     }
@@ -86,7 +97,7 @@ public class Account {
     }
 
     public static AccountItem createItem(String title, String comments, List<AccountDetail> details) {
-        AccountItem item = new AccountItem(String.valueOf(ITEMS.size()));
+        AccountItem item = new AccountItem(java.util.UUID.randomUUID().toString().replaceAll("-", ""));
         item.setTitle(title);
         item.setComment(comments);
         item.clearDetails();
