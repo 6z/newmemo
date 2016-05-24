@@ -1,5 +1,8 @@
 package a6z.com.newmemo.model;
 
+import android.content.Context;
+
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -7,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import a6z.com.newmemo.Utils.SerializationUtil;
 
 /**
  * 账号数据模型.
@@ -31,6 +36,36 @@ public class Account {
         for (int i = 1; i <= COUNT; i++) {
             addItem(createDummyItem(i), i - 1);
         }*/
+    }
+
+    public static void saveToFile(Context context) {
+
+        try {
+            SerializationUtil.Serialize(context, ITEMS, "account.dat");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void readFromFile(Context context) {
+
+        List<AccountItem> dataList = null;
+
+        try {
+            dataList = (List<AccountItem>) SerializationUtil.Deserialze(context, "account.dat");
+            ITEMS.clear();
+            ITEM_MAP.clear();
+            for (AccountItem data : dataList) {
+                addItem(data);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void addItem(AccountItem item) {
+        ITEMS.add(item);
+        ITEM_MAP.put(item.getId(), item);
     }
 
     public static void addItem(AccountItem item, int position) {
@@ -127,9 +162,11 @@ public class Account {
     }
 
     /**
-     * A dummy item representing a piece of content.
+     * 帐号项目实体类.
      */
-    public static class AccountItem implements Cloneable {
+    public static class AccountItem implements Cloneable, Serializable {
+        private static final long serialVersionUID = 2936649311758499194L;
+
         private String id;
         private String title;
         private String comment;
@@ -239,7 +276,12 @@ public class Account {
         }
     }
 
-    public static class AccountDetail implements Cloneable {
+    /**
+     * 帐号详情实体类
+     */
+    public static class AccountDetail implements Cloneable, Serializable {
+        private static final long serialVersionUID = -2586682212525578973L;
+
         private String id;
         private String name;
         private String value;

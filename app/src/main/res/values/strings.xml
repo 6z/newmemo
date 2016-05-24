@@ -6,10 +6,10 @@
 
     <string name="action_settings">设置</string>
     <string name="title_pic">标题图片</string>
-    <string name="title_activity_account_detail">AccountDetailActivity</string>
     <string name="action_edit">编辑</string>
-    <string name="title_activity_account_item_edit">AccountItemEditActivity</string>
+    <string name="title_activity_account_item_edit">编辑帐号详情项</string>
     <string name="comment">说明:</string>
     <string name="account_comment_hint">请输入帐号说明</string>
     <string name="account_module_name">账号</string>
+    <string name="title_activity_account_detail">帐号查看</string>
 </resources>

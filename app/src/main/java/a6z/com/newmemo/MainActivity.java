@@ -42,7 +42,14 @@ public class MainActivity extends AppCompatActivity
             navigationView.setNavigationItemSelectedListener(this);
             navigationView.setCheckedItem(R.id.nav_account);
         }
+        Account.readFromFile(this);
         showFragment(R.id.nav_account);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Account.saveToFile(this);
+        super.onDestroy();
     }
 
     @Override
