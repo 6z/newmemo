@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer != null) {
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -41,7 +40,9 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(this);
+            navigationView.setCheckedItem(R.id.nav_account);
         }
+        showFragment(R.id.nav_account);
     }
 
     @Override
@@ -135,6 +136,7 @@ public class MainActivity extends AppCompatActivity
             if (accountFragment == null) {
                 accountFragment = new AccountListViewFragment();
             }
+            setTitle(getResources().getString(R.string.account_module_name));
             transaction.replace(R.id.id_content, accountFragment);
         }/* else if (key == R.id.nav_calendar) {
 

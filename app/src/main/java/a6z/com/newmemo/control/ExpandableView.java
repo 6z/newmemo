@@ -103,16 +103,34 @@ public class ExpandableView extends RelativeLayout {
                     @Override
                     public boolean onPreDraw() {
                         contentLayout.getViewTreeObserver().removeOnPreDrawListener(this);
-                        contentLayout.setVisibility(contentDefaultVisible);
 
                         final int widthSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
                         final int heightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
                         contentLayout.measure(widthSpec, heightSpec);
 
                         animator = slideAnimator(0, contentLayout.getMeasuredHeight());
+                        if (contentDefaultVisible == VISIBLE) {
+                            expand();
+                        }
                         return true;
                     }
                 });
+    }
+
+    /**
+     * 重新布局通知
+     */
+    public void notifyContentViewChanged() {
+        final int widthSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        final int heightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        contentLayout.measure(widthSpec, heightSpec);
+        ViewGroup.LayoutParams layoutParams = contentLayout.getLayoutParams();
+        layoutParams.height = contentLayout.getMeasuredHeight();
+
+        contentLayout.setLayoutParams(layoutParams);
+        contentLayout.invalidate();
+
+        animator.setIntValues(0, contentLayout.getMeasuredHeight());
     }
 
     public void setContentDefaultVisible(int visible) {
@@ -332,5 +350,4 @@ public class ExpandableView extends RelativeLayout {
         });
         return animator;
     }
-
 }

@@ -9,7 +9,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import a6z.com.newmemo.Utils.StringUtil;
 import a6z.com.newmemo.model.Account;
 
 /**
@@ -37,7 +36,9 @@ public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<A
         final Account.AccountDetail item = mAccountItem.getDetails().get(position);
         holder.mNameView.setText(item.getName());
         //绘制带下划线的文本
-        holder.mValueView.setText(StringUtil.getUnderlineString(item.getValue()));
+        //holder.mValueView.setText(StringUtil.getUnderlineString(item.getValue()));
+
+        holder.mValueView.setText(item.getValue());
         //Drawable bitmap =holder.mRootView.getContext().getResources().getDrawable(R.drawable.ic_menu_camera,null);
         //holder.mLogView.setImageDrawable(bitmap);
         holder.mLogView.setImageBitmap(BitmapDrawer.getFilledRect(40, 40,

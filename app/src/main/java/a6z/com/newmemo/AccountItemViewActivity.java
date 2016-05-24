@@ -33,6 +33,9 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
     private RecyclerView mDetailView;
     private TextView mCommentView;
 
+    private ExpandableView mDetailExpandableView;
+    private ExpandableView mCommentExpandableView;
+
     //private AccountItemViewFragment mAccountItemViewFragment;
 
     @Override
@@ -88,10 +91,10 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
     }
 
     private void initView() {
-        ExpandableView detailContainerView = (ExpandableView) findViewById(R.id.id_item_detail_container);
-        if (detailContainerView != null) {
-            detailContainerView.fillData(android.R.drawable.ic_menu_view, "账号明细", true);
-            detailContainerView.setActionButton(R.drawable.ic_add_black, new View.OnClickListener() {
+        mDetailExpandableView = (ExpandableView) findViewById(R.id.id_item_detail_container);
+        if (mDetailExpandableView != null) {
+            mDetailExpandableView.fillData(android.R.drawable.ic_menu_view, "账号明细", true);
+            mDetailExpandableView.setActionButton(R.drawable.ic_add_black, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     onItemDetailAddRequested();
@@ -101,16 +104,17 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
             mDetailView.setLayoutManager(new LinearLayoutManager(this));
             mDetailView.setAdapter(new AccountItemDetailRecyclerViewAdapter(mItem, this));
 
-            detailContainerView.addContentView(mDetailView);
-            detailContainerView.setContentDefaultVisible(View.VISIBLE);
+            mDetailExpandableView.addContentView(mDetailView);
+            mDetailExpandableView.setContentDefaultVisible(View.VISIBLE);
         }
-        ExpandableView commentContainerView = (ExpandableView) findViewById(R.id.id_item_comment_container);
-        if (commentContainerView != null) {
-            commentContainerView.fillData(android.R.drawable.ic_menu_info_details, "帐号说明", true);
-            View contentView = getLayoutInflater().inflate(R.layout.account_comment_view, commentContainerView, false);
+        mCommentExpandableView = (ExpandableView) findViewById(R.id.id_item_comment_container);
+        if (mCommentExpandableView != null) {
+            mCommentExpandableView.fillData(android.R.drawable.ic_menu_info_details, "帐号说明", true);
+            View contentView = getLayoutInflater().inflate(R.layout.account_comment_view, mCommentExpandableView, false);
             mCommentView = (TextView) contentView.findViewById(R.id.id_comment);
             mCommentView.setText(mItem.getComment());
-            commentContainerView.addContentView(contentView);
+            mCommentExpandableView.addContentView(contentView);
+            mCommentExpandableView.setContentDefaultVisible(View.VISIBLE);
         }
     }
 
@@ -120,6 +124,16 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
 
         //MenuItem delMenu = menu.findItem(R.id.action_del);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (m_IsModified) {
+            Intent intent = getIntent();
+            intent.putExtra(ViewTransaction.ACTION_ARG_TAG, ViewTransaction.ACTION_MODIFY);
+            setResult(RESULT_OK, intent);
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -251,11 +265,13 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
     private void addItemDetail(String name, String value) {
         AccountItemDetailRecyclerViewAdapter adapter = (AccountItemDetailRecyclerViewAdapter) mDetailView.getAdapter();
         adapter.addItem(name, value);
+        mDetailExpandableView.notifyContentViewChanged();
     }
 
     private void removeItemDetail(String detailId) {
         AccountItemDetailRecyclerViewAdapter adapter = (AccountItemDetailRecyclerViewAdapter) mDetailView.getAdapter();
         adapter.removeItem(detailId);
+        mDetailExpandableView.notifyContentViewChanged();
     }
 
     private void modifyItemDetail(String detailId, String name, String value) {
@@ -268,5 +284,6 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
         mItem.setComment(comment);
         mAppBarLayout.setTitle(title);
         mCommentView.setText(comment);
+        mCommentExpandableView.notifyContentViewChanged();
     }
 }

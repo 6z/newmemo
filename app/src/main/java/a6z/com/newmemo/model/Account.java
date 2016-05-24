@@ -26,10 +26,11 @@ public class Account {
     private static final int COUNT = 25;
 
     static {
+        /*
         // Add some sample items.
         for (int i = 1; i <= COUNT; i++) {
             addItem(createDummyItem(i), i - 1);
-        }
+        }*/
     }
 
     public static void addItem(AccountItem item, int position) {
@@ -122,7 +123,7 @@ public class Account {
     }
 
     private static String makeComments(int position) {
-        return "银行 " + "网站 " + "生活";
+        return "银行 \r\n" + "网站 " + "生活";
     }
 
     /**

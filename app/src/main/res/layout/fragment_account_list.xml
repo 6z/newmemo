@@ -17,6 +17,16 @@
         tools:context=".AccountListViewFragment"
         tools:listitem="@layout/fragment_account_list_item_tpl" />
 
+    <TextView
+        android:id="@+id/emptyTips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:text="还没有帐号，开始记录吧。"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
