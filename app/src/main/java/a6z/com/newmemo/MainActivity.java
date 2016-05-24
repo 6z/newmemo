@@ -43,12 +43,11 @@ public class MainActivity extends AppCompatActivity
             navigationView.setCheckedItem(R.id.nav_account);
         }
         Account.readFromFile(this);
-        showFragment(R.id.nav_account);
+        showFragment(R.id.nav_account, false);
     }
 
     @Override
     protected void onDestroy() {
-        Account.saveToFile(this);
         super.onDestroy();
     }
 
@@ -60,9 +59,13 @@ public class MainActivity extends AppCompatActivity
                 drawer.closeDrawer(GravityCompat.START);
             } else {
                 super.onBackPressed();
+                finish();
+                System.exit(0);
             }
         } else {
             super.onBackPressed();
+            finish();
+            System.exit(0);
         }
     }
 
@@ -82,6 +85,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Account.saveToFile(this);
             return true;
         }
 
@@ -95,7 +99,7 @@ public class MainActivity extends AppCompatActivity
 
         int id = item.getItemId();
 
-        showFragment(id);
+        showFragment(id, true);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer != null) {
@@ -136,7 +140,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void showFragment(int key) {
+    private void showFragment(int key, boolean canRollback) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         if (key == R.id.nav_account) {
@@ -156,8 +160,9 @@ public class MainActivity extends AppCompatActivity
         } else if (key == R.id.nav_send) {
 
         }*/
-
-        transaction.addToBackStack(null);
+        if (canRollback) {
+            transaction.addToBackStack(null);
+        }
         transaction.commit();
     }
 
