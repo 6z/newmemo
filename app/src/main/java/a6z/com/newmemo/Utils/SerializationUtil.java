@@ -15,11 +15,6 @@ import java.io.ObjectOutputStream;
 public class SerializationUtil {
 
     public static void Serialize(Context context, Object obj, String filename) throws Exception {
-
-        /*String txt = "123456";
-        String txt_1 = CryptoUtil.encrypt(txt);
-        String txt_2 = CryptoUtil.decrypt(txt_1);
-        String a = txt_2;*/
            /*
     * 1、根据上下文对象能快速得到一个文件输出流对象；
     * 2、私有操作模式：创建出来的文件只能被本应用访问，其他应用无法访问该文件：Context.MODE_PRIVATE；
@@ -33,15 +28,6 @@ public class SerializationUtil {
         byte[] buf = baos.toByteArray(); //从这个地层字节流中把传输的数组给一个新的数组
         oos.flush();
         oos.close();
-
-        /*String txt =CryptoUtil.toHex(buf);
-        String encryptTxt =CryptoUtil.encrypt(txt);
-
-        String txt_1 = CryptoUtil.decrypt(encryptTxt);
-        byte[] buf_1 =CryptoUtil.toByte(txt_1);
-        ByteArrayInputStream bais = new ByteArrayInputStream(buf_1);
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        Object entity = ois.readObject();*/
 
         FileOutputStream outStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
         //把字符串传化为二进制数据写入到文件中
@@ -68,8 +54,6 @@ public class SerializationUtil {
         }
         //从内存中获取得到的数据
         byte[] data = outStream.toByteArray();
-
-        //data = CryptoUtil.decrypt(cryptoSeed, data);
 
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         ObjectInputStream ois = new ObjectInputStream(bais);

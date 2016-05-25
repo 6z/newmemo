@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity
             navigationView.setNavigationItemSelectedListener(this);
             navigationView.setCheckedItem(R.id.nav_account);
         }
-        Account.readFromFile(this);
+        Account.readFromFile(this, true);
         showFragment(R.id.nav_account, false);
     }
 
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Account.saveToFile(this);
+            Account.saveToFile(this, true);
             return true;
         }
 

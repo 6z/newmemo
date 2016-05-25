@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import a6z.com.newmemo.Utils.CryptoUtil;
 import a6z.com.newmemo.Utils.SerializationUtil;
 
 /**
  * 账号数据模型.
  */
 public class Account {
-
     /**
      * An array of account items.
      */
@@ -28,34 +28,47 @@ public class Account {
      */
     public static final Map<String, AccountItem> ITEM_MAP = new HashMap<>();
 
-    private static final int COUNT = 25;
-
     static {
-        /*
-        // Add some sample items.
-        for (int i = 1; i <= COUNT; i++) {
-            addItem(createDummyItem(i), i - 1);
-        }*/
+
     }
 
-    public static void saveToFile(Context context) {
-
+    public static void saveToFile(Context context, boolean toEnCrypt) {
+        AccountPersistent persistent = new AccountPersistent();
+        //persistent.setSecretKey(CRYPT_KEY);
         try {
-            SerializationUtil.Serialize(context, ITEMS, "account.dat");
+            if (toEnCrypt) {
+                persistent.setItems(new ArrayList<AccountItem>());
+                for (AccountItem originData : ITEMS) {
+                    AccountItem newData = (AccountItem) originData.clone();
+                    for (AccountDetail detail : newData.getDetails()) {
+                        detail.setValue(CryptoUtil.encrypt(detail.getValue(), persistent.getSecretKey()));
+                    }
+                    persistent.getItems().add(newData);
+                }
+            } else {
+                persistent.setItems(ITEMS);
+            }
+            SerializationUtil.Serialize(context, persistent, "account.dat");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void readFromFile(Context context) {
-
-        List<AccountItem> dataList = null;
+    public static void readFromFile(Context context, boolean toDecrypt) {
 
         try {
-            dataList = (List<AccountItem>) SerializationUtil.Deserialze(context, "account.dat");
+            AccountPersistent persistent = (AccountPersistent) SerializationUtil.Deserialze(context, "account.dat");
             ITEMS.clear();
             ITEM_MAP.clear();
-            for (AccountItem data : dataList) {
+            if (persistent == null) {
+                return;
+            }
+            for (AccountItem data : persistent.getItems()) {
+                for (AccountDetail detail : data.getDetails()) {
+                    if (toDecrypt) {
+                        detail.setValue(CryptoUtil.decrypt(detail.getValue(), persistent.getSecretKey()));
+                    }
+                }
                 addItem(data);
             }
         } catch (Exception e) {
@@ -146,26 +159,11 @@ public class Account {
         return item;
     }
 
-    private static AccountItem createDummyItem(int position) {
-        AccountItem item = new AccountItem(String.valueOf(position));
-        item.setTitle("账号 " + position);
-        item.setComment(makeComments(position));
-        item.setUpdateTime(Calendar.getInstance());
-        for (int i = 1; i <= 5; i++) {
-            item.addDetail("我没意见" + i, "你呢?" + i);
-        }
-        return item;
-    }
-
-    private static String makeComments(int position) {
-        return "银行 \r\n" + "网站 " + "生活";
-    }
-
     /**
      * 帐号项目实体类.
      */
     public static class AccountItem implements Cloneable, Serializable {
-        private static final long serialVersionUID = 2936649311758499194L;
+        private static final long serialVersionUID = 100;
 
         private String id;
         private String title;
@@ -280,7 +278,7 @@ public class Account {
      * 帐号详情实体类
      */
     public static class AccountDetail implements Cloneable, Serializable {
-        private static final long serialVersionUID = -2586682212525578973L;
+        private static final long serialVersionUID = 100;
 
         private String id;
         private String name;
@@ -320,6 +318,33 @@ public class Account {
         @Override
         public Object clone() throws CloneNotSupportedException {
             return super.clone();
+        }
+    }
+
+    private static class AccountPersistent extends PersistentEntity implements Serializable {
+
+        private static final long serialVersionUID = 100;
+
+        private final static String CRYPT_KEY = "nEwZhI@0510.2O16";
+
+        private List<AccountItem> Items;
+
+        @Override
+        public String getSecretKey() {
+            return CRYPT_KEY;
+        }
+
+        @Override
+        public void setSecretKey(String secretKey) {
+            super.setSecretKey(CRYPT_KEY);
+        }
+
+        public List<AccountItem> getItems() {
+            return Items;
+        }
+
+        public void setItems(List<AccountItem> items) {
+            Items = items;
         }
     }
 }

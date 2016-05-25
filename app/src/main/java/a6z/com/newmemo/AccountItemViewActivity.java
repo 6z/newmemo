@@ -198,10 +198,12 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
                 addItemDetail(name, value);
             }
         } else if (requestCode == ViewTransaction.PAGE_ACCOUNT_ITEM_INFO_EDIT) {
+
             if (RESULT_OK != resultCode) {
                 return;
             }
             int action = data.getIntExtra(ViewTransaction.ACTION_ARG_TAG, ViewTransaction.ACTION_NONE);
+            //基本信息编辑返回到这的状态,只有修改
             if (action != ViewTransaction.ACTION_MODIFY) {
                 return;
             }
@@ -280,8 +282,9 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
     }
 
     private void modifyItem(String title, String comment) {
-        mItem.setTitle(title);
-        mItem.setComment(comment);
+        Account.modifyItem(mItem.getId(), title, comment);
+        //mItem.setTitle(title);
+        //mItem.setComment(comment);
         mAppBarLayout.setTitle(title);
         mCommentView.setText(comment);
         mCommentExpandableView.notifyContentViewChanged();
