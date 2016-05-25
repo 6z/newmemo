@@ -13,18 +13,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import a6z.com.newmemo.Utils.ExitHandler;
 import a6z.com.newmemo.model.Account;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
-        , AccountListViewFragment.OnFragmentInteractionListener {
+        , AccountListViewFragment.OnFragmentInteractionListener
+        , ExitHandler.ConfirmRequestListener {
 
     private AccountListViewFragment accountFragment;
+    private ExitHandler exitHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        exitHandler = new ExitHandler(this);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -58,14 +65,10 @@ public class MainActivity extends AppCompatActivity
             if (drawer.isDrawerOpen(GravityCompat.START)) {
                 drawer.closeDrawer(GravityCompat.START);
             } else {
-                super.onBackPressed();
-                finish();
-                System.exit(0);
+                exitHandler.exit();
             }
         } else {
-            super.onBackPressed();
-            finish();
-            System.exit(0);
+            exitHandler.exit();
         }
     }
 
@@ -179,5 +182,20 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, AccountItemInfoEditActivity.class);
         //noinspection unchecked
         startActivityForResult(intent, ViewTransaction.PAGE_ACCOUNT_ITEM_INFO_EDIT, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+    }
+
+    @Override
+    public void onWaitForExitConfirm() {
+        Toast.makeText(this, "请再按一次退出", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onBeforeExit() {
+        finish();
+    }
+
+    @Override
+    public void onExitCancelled() {
+        Toast.makeText(this, "取消退出", Toast.LENGTH_SHORT).show();
     }
 }
