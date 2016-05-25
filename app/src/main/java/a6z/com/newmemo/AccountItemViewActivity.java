@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,8 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
 
     public static final String ARG_TAG = "item_id";
 
+    private boolean mInEditMode;
+
     private Account.AccountItem mItem;
 
     private boolean m_IsModified;
@@ -36,7 +39,8 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
     private ExpandableView mDetailExpandableView;
     private ExpandableView mCommentExpandableView;
 
-    //private AccountItemViewFragment mAccountItemViewFragment;
+    private MenuItem mDelItemMenu;
+    private MenuItem mModifyItemBaseInfoMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,34 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
         mAppBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         if (mAppBarLayout != null) {
             mAppBarLayout.setTitle(mItem.getTitle());
+        }
+
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        if (fab != null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mInEditMode = !mInEditMode;
+                    if (mDelItemMenu != null) {
+                        mDelItemMenu.setVisible(mInEditMode);
+                    }
+                    if (mModifyItemBaseInfoMenu != null) {
+                        mModifyItemBaseInfoMenu.setVisible(mInEditMode);
+                    }
+                    AccountItemDetailRecyclerViewAdapter adapter = (AccountItemDetailRecyclerViewAdapter) mDetailView.getAdapter();
+                    if (adapter != null) {
+                        adapter.setEditable(mInEditMode);
+                    }
+                    if (mDetailExpandableView != null) {
+                        mDetailExpandableView.setActionButtonVisible(mInEditMode);
+                    }
+                    if (mInEditMode) {
+                        fab.setImageResource(R.drawable.ic_security_white);
+                    } else {
+                        fab.setImageResource(R.drawable.ic_mode_edit_white);
+                    }
+                }
+            });
         }
 
         // savedInstanceState is non-null when there is fragment state
@@ -100,9 +132,10 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
                     onItemDetailAddRequested();
                 }
             });
+            mDetailExpandableView.setActionButtonVisible(mInEditMode);
             mDetailView = new RecyclerView(this);
             mDetailView.setLayoutManager(new LinearLayoutManager(this));
-            mDetailView.setAdapter(new AccountItemDetailRecyclerViewAdapter(mItem, this));
+            mDetailView.setAdapter(new AccountItemDetailRecyclerViewAdapter(mItem, mInEditMode, this));
 
             mDetailExpandableView.addContentView(mDetailView);
             mDetailExpandableView.setContentDefaultVisible(View.VISIBLE);
@@ -121,8 +154,14 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_account_detail, menu);
-
-        //MenuItem delMenu = menu.findItem(R.id.action_del);
+        mDelItemMenu = menu.findItem((R.id.action_del));
+        mModifyItemBaseInfoMenu = menu.findItem((R.id.action_modify));
+        if (mDelItemMenu != null) {
+            mDelItemMenu.setVisible(mInEditMode);
+        }
+        if (mModifyItemBaseInfoMenu != null) {
+            mModifyItemBaseInfoMenu.setVisible(mInEditMode);
+        }
         return true;
     }
 

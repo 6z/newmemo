@@ -256,6 +256,13 @@ public class ExpandableView extends RelativeLayout {
         actionButton.setOnClickListener(clickListener);
     }
 
+    public void setActionButtonVisible(boolean visible) {
+        if (!visible) {
+            actionButton.setVisibility(GONE);
+        } else {
+            actionButton.setVisibility(VISIBLE);
+        }
+    }
 
     /**
      * Expand animation to display the discoverable content.

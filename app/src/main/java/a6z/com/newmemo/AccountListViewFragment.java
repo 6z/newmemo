@@ -18,7 +18,7 @@ import a6z.com.newmemo.model.Account.AccountItem;
 
 /**
  * 帐号列表 Fragment
- * <p>
+ * <p/>
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
@@ -98,6 +98,12 @@ public class AccountListViewFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        Account.saveToFile(getContext(), true);
+        super.onDestroy();
     }
 
     private void checkViewMode() {

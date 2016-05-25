@@ -61,6 +61,17 @@ public class ExitHandler {
         }
     }
 
+    public void cancelExit() {
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+            mCurTimes = 0;
+        }
+        if (mListener != null) {
+            mListener.onExitCancelled();
+        }
+    }
+
     public interface ConfirmRequestListener {
         void onWaitForExitConfirm();
 

@@ -54,11 +54,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer != null) {
@@ -171,6 +166,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemClicked(Account.AccountItem item) {
+        exitHandler.cancelExit();
+
         Intent intent = new Intent(this, AccountItemViewActivity.class);
         intent.putExtra(AccountItemViewActivity.ARG_TAG, item.getId());
         //noinspection unchecked
@@ -179,6 +176,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onAddItemRequest() {
+        exitHandler.cancelExit();
+
         Intent intent = new Intent(this, AccountItemInfoEditActivity.class);
         //noinspection unchecked
         startActivityForResult(intent, ViewTransaction.PAGE_ACCOUNT_ITEM_INFO_EDIT, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
@@ -196,6 +195,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onExitCancelled() {
-        Toast.makeText(this, "取消退出", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "取消退出", Toast.LENGTH_SHORT).show();
     }
 }

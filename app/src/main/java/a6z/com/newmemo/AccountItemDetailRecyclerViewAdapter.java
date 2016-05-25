@@ -9,6 +9,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import a6z.com.newmemo.model.Account;
 
 /**
@@ -18,17 +21,23 @@ public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<A
 
     private final Account.AccountItem mAccountItem;
     private OnInteractionListener mListener;
+    private boolean mEditable;
 
-    public AccountItemDetailRecyclerViewAdapter(Account.AccountItem accountItem, OnInteractionListener listener) {
+    private List<ViewHolder> mViewHolderList = new ArrayList<>();
+
+    public AccountItemDetailRecyclerViewAdapter(Account.AccountItem accountItem, boolean editable, OnInteractionListener listener) {
         this.mAccountItem = accountItem;
         this.mListener = listener;
+        this.mEditable = editable;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.account_item_detail_tpl, parent, false);
-        return new ViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view);
+        mViewHolderList.add(viewHolder);
+        return viewHolder;
     }
 
     @Override
@@ -59,6 +68,7 @@ public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<A
                 }
             }
         });
+        holder.setEditable(mEditable);
     }
 
     @Override
@@ -67,6 +77,13 @@ public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<A
             return 0;
         }
         return mAccountItem.getDetails().size();
+    }
+
+    public void setEditable(boolean editable) {
+        mEditable = editable;
+        for (ViewHolder viewHolder : mViewHolderList) {
+            viewHolder.setEditable(editable);
+        }
     }
 
     public void addItem(String name, String value) {
@@ -80,6 +97,7 @@ public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<A
         int index = Account.removeItemDetail(mAccountItem.getId(), itemId);
         if (index >= 0) {
             notifyItemRemoved(index);
+            mViewHolderList.remove(index);
         }
     }
 
@@ -111,6 +129,16 @@ public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<A
             mLogView = (ImageView) view.findViewById(R.id.id_logImage);
             mRemoveButton = (ImageButton) view.findViewById(R.id.remove_button);
             mEditButton = (ImageButton) view.findViewById(R.id.edit_button);
+        }
+
+        public void setEditable(boolean editable) {
+            if (editable) {
+                mRemoveButton.setVisibility(View.VISIBLE);
+                mEditButton.setVisibility(View.VISIBLE);
+            } else {
+                mRemoveButton.setVisibility(View.GONE);
+                mEditButton.setVisibility(View.GONE);
+            }
         }
 
         @Override
