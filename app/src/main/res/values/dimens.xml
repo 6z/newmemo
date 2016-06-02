@@ -6,7 +6,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">8dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="text_margin">2dp</dimen>
+    <dimen name="margin_between_text">2dp</dimen>
+    <dimen name="margin_text_from_container">8dp</dimen>
     <dimen name="list_image_width">40dp</dimen>
     <dimen name="list_image_height">40dp</dimen>
     <dimen name="app_bar_height">200dp</dimen>

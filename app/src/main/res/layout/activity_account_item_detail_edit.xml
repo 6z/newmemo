@@ -20,7 +20,7 @@
         android:id="@+id/id_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
+        android:layout_margin="@dimen/margin_between_text"
         android:hint="请输入项目名"
         android:singleLine="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
@@ -35,7 +35,7 @@
         android:id="@+id/id_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
+        android:layout_margin="@dimen/margin_between_text"
         android:hint="请输入项目值"
         android:singleLine="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />

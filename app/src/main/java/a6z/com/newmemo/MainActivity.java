@@ -50,6 +50,16 @@ public class MainActivity extends AppCompatActivity
             navigationView.setCheckedItem(R.id.nav_account);
         }
         Account.readFromFile(this, true);
+
+        /*String dataDirectory = Environment.getExternalStorageDirectory().getPath() + "/mynotes";
+
+        AccountImport _import = new AccountImport(new File(dataDirectory), "myNotes.xml");
+        try {
+            _import.load();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "导入数据失败", Toast.LENGTH_SHORT).show();
+        }*/
         showFragment(R.id.nav_account, false);
     }
 

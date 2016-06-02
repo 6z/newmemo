@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="46dp">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_between_text"
+    android:layout_marginTop="@dimen/margin_between_text">
 
     <a6z.com.newmemo.RoundImageView
         android:id="@+id/id_logImage"
@@ -18,27 +20,28 @@
 
     <TextView
         android:id="@+id/id_name"
-        android:layout_width="70dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_margin="@dimen/text_margin"
-        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/margin_between_text"
+        android:layout_marginRight="@dimen/margin_between_text"
+        android:layout_marginTop="@dimen/margin_between_text"
         android:layout_toRightOf="@+id/id_logImage"
         android:singleLine="true"
         android:text="看我表演"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        android:textAppearance="@style/ListItemTitle" />
 
     <TextView
         android:id="@+id/id_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@id/id_name"
+        android:layout_below="@id/id_name"
+        android:layout_marginBottom="@dimen/margin_between_text"
+        android:layout_marginLeft="@dimen/margin_between_text"
+        android:layout_marginRight="@dimen/margin_between_text"
+        android:layout_toRightOf="@+id/id_logImage"
         android:singleLine="true"
         android:text="world"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
     <ImageButton
         android:id="@+id/edit_button"

@@ -82,7 +82,11 @@ public class Account {
     }
 
     public static void addItem(AccountItem item, int position) {
-        ITEMS.add(position, item);
+        if (position < 0) {
+            ITEMS.add(item);
+        } else {
+            ITEMS.add(position, item);
+        }
         ITEM_MAP.put(item.getId(), item);
     }
 
@@ -171,11 +175,13 @@ public class Account {
         private Calendar updateTime;
         private List<AccountDetail> details;
         private Map<String, AccountDetail> detailMap;
+        private List<String> tags;
 
         public AccountItem(String id) {
             this.id = id;
             this.details = new ArrayList<>();
             this.detailMap = new HashMap<>();
+            this.tags = new ArrayList<>();
         }
 
         public String getId() {
@@ -188,6 +194,7 @@ public class Account {
 
         public void setTitle(String title) {
             this.title = title;
+            notifyModified();
         }
 
         public String getComment() {
@@ -196,6 +203,7 @@ public class Account {
 
         public void setComment(String comment) {
             this.comment = comment;
+            notifyModified();
         }
 
         public Calendar getUpdateTime() {
@@ -220,6 +228,10 @@ public class Account {
             return details.size();
         }
 
+        public String[] getTags() {
+            return tags.toArray(null);
+        }
+
         public void clearDetails() {
             this.details.clear();
             this.detailMap.clear();
@@ -231,7 +243,7 @@ public class Account {
         }
 
         public void addDetail(String key, String value) {
-            AccountDetail item = AccountDetail.Create(key, value);
+            AccountDetail item = AccountDetail.create(key, value);
             addDetail(item);
         }
 
@@ -256,6 +268,10 @@ public class Account {
             return -1;
         }
 
+        public void addTag(String tag) {
+            tags.add(tag);
+        }
+
         @Override
         public String toString() {
             return title;
@@ -267,10 +283,21 @@ public class Account {
             newObj.setTitle(getTitle());
             newObj.setComment(getComment());
             newObj.setUpdateTime(getUpdateTime());
-            for (AccountDetail detail : getDetails()) {
-                newObj.addDetail((AccountDetail) detail.clone());
+            if (details != null) {
+                for (AccountDetail detail : details) {
+                    newObj.addDetail((AccountDetail) detail.clone());
+                }
+            }
+            if (tags != null) {
+                for (String tag : tags) {
+                    newObj.addTag(tag);
+                }
             }
             return newObj;
+        }
+
+        private void notifyModified() {
+            this.updateTime = Calendar.getInstance();
         }
     }
 
@@ -283,13 +310,14 @@ public class Account {
         private String id;
         private String name;
         private String value;
+        private boolean isSecurity;
 
         private AccountDetail(String name, String value) {
             this.name = name;
             this.value = value;
         }
 
-        public static AccountDetail Create(String key, String value) {
+        public static AccountDetail create(String key, String value) {
             AccountDetail item = new AccountDetail(key, value);
             item.id = java.util.UUID.randomUUID().toString().replaceAll("-", "");
             return item;
@@ -313,6 +341,14 @@ public class Account {
 
         public void setValue(String value) {
             this.value = value;
+        }
+
+        public boolean isSecurity() {
+            return isSecurity;
+        }
+
+        public void setSecurity(boolean security) {
+            isSecurity = security;
         }
 
         @Override
