@@ -57,7 +57,7 @@ public class ExitHandler {
             if (mListener != null) {
                 mListener.onBeforeExit();
             }
-            System.exit(0);
+            //System.exit(0);
         }
     }
 

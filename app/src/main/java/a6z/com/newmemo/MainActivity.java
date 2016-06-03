@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import a6z.com.newmemo.Utils.ExitHandler;
 import a6z.com.newmemo.model.Account;
+import a6z.com.newmemo.model.AccountItem;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
@@ -49,17 +50,7 @@ public class MainActivity extends AppCompatActivity
             navigationView.setNavigationItemSelectedListener(this);
             navigationView.setCheckedItem(R.id.nav_account);
         }
-        Account.readFromFile(this, true);
 
-        /*String dataDirectory = Environment.getExternalStorageDirectory().getPath() + "/mynotes";
-
-        AccountImport _import = new AccountImport(new File(dataDirectory), "myNotes.xml");
-        try {
-            _import.load();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "导入数据失败", Toast.LENGTH_SHORT).show();
-        }*/
         showFragment(R.id.nav_account, false);
     }
 
@@ -93,7 +84,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Account.saveToFile(this, true);
+            //Account.saveToFile(this, true);
             return true;
         }
 
@@ -134,7 +125,7 @@ public class MainActivity extends AppCompatActivity
                         if (action == ViewTransaction.ACTION_NEW) {
                             String title = data.getStringExtra(AccountItemInfoEditActivity.NAME_ARG_TAG);
                             String comment = data.getStringExtra(AccountItemInfoEditActivity.COMMENT_ARG_TAG);
-                            Account.AccountItem item = Account.createItem(title, comment, null);
+                            AccountItem item = Account.createItem(title, comment, null);
                             accountFragment.addItem(item);
                             onItemClicked(item);
                         }
@@ -175,7 +166,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onItemClicked(Account.AccountItem item) {
+    public void onItemClicked(AccountItem item) {
         exitHandler.cancelExit();
 
         Intent intent = new Intent(this, AccountItemViewActivity.class);
@@ -195,7 +186,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onWaitForExitConfirm() {
-        Toast.makeText(this, "请再按一次退出", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "请再按一次退回桌面", Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -13,19 +13,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import a6z.com.newmemo.model.Account;
+import a6z.com.newmemo.model.AccountItem;
+import a6z.com.newmemo.model.AccountItemDetail;
 
 /**
  * 自定义账号详细里的列表适配器
  */
 public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<AccountItemDetailRecyclerViewAdapter.ViewHolder> {
 
-    private final Account.AccountItem mAccountItem;
+    private final AccountItem mAccountItem;
     private OnInteractionListener mListener;
     private boolean mEditable;
 
     private List<ViewHolder> mViewHolderList = new ArrayList<>();
 
-    public AccountItemDetailRecyclerViewAdapter(Account.AccountItem accountItem, boolean editable, OnInteractionListener listener) {
+    public AccountItemDetailRecyclerViewAdapter(AccountItem accountItem, boolean editable, OnInteractionListener listener) {
         this.mAccountItem = accountItem;
         this.mListener = listener;
         this.mEditable = editable;
@@ -42,7 +44,7 @@ public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<A
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Account.AccountDetail item = mAccountItem.getDetails().get(position);
+        final AccountItemDetail item = mAccountItem.getDetails().get(position);
         holder.mNameView.setText(item.getName());
         //绘制带下划线的文本
         //holder.mValueView.setText(StringUtil.getUnderlineString(item.getValue()));
@@ -110,9 +112,9 @@ public class AccountItemDetailRecyclerViewAdapter extends RecyclerView.Adapter<A
 
     public interface OnInteractionListener {
 
-        void onItemDetailEditRequested(Account.AccountDetail detail);
+        void onItemDetailEditRequested(AccountItemDetail detail);
 
-        void onItemDetailRemoveRequested(Account.AccountDetail detail);
+        void onItemDetailRemoveRequested(AccountItemDetail detail);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

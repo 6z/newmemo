@@ -2,6 +2,7 @@ package a6z.com.newmemo;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,10 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
 
 import a6z.com.newmemo.control.DividerItemDecoration;
 import a6z.com.newmemo.model.Account;
-import a6z.com.newmemo.model.Account.AccountItem;
+import a6z.com.newmemo.model.AccountImport;
+import a6z.com.newmemo.model.AccountItem;
+import a6z.com.newmemo.model.AccountLoadedListener;
+import a6z.com.newmemo.model.AccountSavedListener;
 
 /**
  * 帐号列表 Fragment
@@ -24,10 +31,31 @@ import a6z.com.newmemo.model.Account.AccountItem;
  */
 public class AccountListViewFragment extends Fragment {
 
+    private final AccountLoadedListener accountLoadedListener = new AccountLoadedListener() {
+        @Override
+        public void onSuccessful() {
+            Toast.makeText(getContext(), "帐号加载成功", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onFailure(String msg) {
+            Toast.makeText(getContext(), "帐号加载失败:" + msg, Toast.LENGTH_LONG).show();
+        }
+    };
+    private final AccountSavedListener accountSavedListener = new AccountSavedListener() {
+        @Override
+        public void onSuccessful() {
+            Toast.makeText(getContext(), "帐号保存成功", Toast.LENGTH_SHORT).show();
+
+        }
+
+        @Override
+        public void onFailure(String msg) {
+            Toast.makeText(getContext(), "帐号保存失败:" + msg, Toast.LENGTH_LONG).show();
+        }
+    };
     private int mColumnCount = 1;
-
     private OnFragmentInteractionListener mListener;
-
     private TextView mEmptyTipsView;
     private RecyclerView mRecyclerView;
 
@@ -38,16 +66,38 @@ public class AccountListViewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Account.init(getContext(), accountSavedListener, accountLoadedListener);
+
+    }
+
+    private void importOld() {
+        String dataDirectory = Environment.getExternalStorageDirectory().getPath() + "/mynotes";
+        AccountImport _import = new AccountImport(new File(dataDirectory), "myNotes.xml");
+        try {
+            Account.setCachedMode(true);
+            _import.load();
+        } catch (Exception e) {
+            e.printStackTrace();
+            //Toast.makeText(this, "导入数据失败", Toast.LENGTH_SHORT).show();
+        } finally {
+            Account.setCachedMode(false);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         View view = inflater.inflate(R.layout.fragment_account_list, container, false);
 
         mEmptyTipsView = (TextView) view.findViewById(R.id.emptyTips);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.id_account_list);
+
+        Account.beginLoad();
+
+        //importOld();
 
         checkViewMode();
 
@@ -71,8 +121,7 @@ public class AccountListViewFragment extends Fragment {
                     if (mListener != null) {
                         mListener.onAddItemRequest();
                     }
-                    /*addItem(Account.createItem("中国银行", "房贷还款", null));
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();*/
                 }
             });
@@ -96,13 +145,13 @@ public class AccountListViewFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        super.onDetach();
         mListener = null;
+        super.onDetach();
     }
 
     @Override
     public void onDestroy() {
-        Account.saveToFile(getContext(), true);
+        //Account.saveToFile(getContext(), true);
         super.onDestroy();
     }
 

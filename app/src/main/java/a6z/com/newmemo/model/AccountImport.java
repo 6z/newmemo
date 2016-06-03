@@ -22,8 +22,8 @@ public class AccountImport extends XMLHandler {
     protected void parse(String xml) throws Exception {
         XmlPullParser parser = Xml.newPullParser();
         String curCategory = null;
-        Account.AccountItem curItem = null;
-        Account.AccountDetail curItemData = null;
+        AccountItem curItem = null;
+        AccountItemDetail curItemData = null;
 
         Boolean readDataText = false;
         StringReader stream = new StringReader(xml);
@@ -33,6 +33,7 @@ public class AccountImport extends XMLHandler {
         while (XmlPullParser.END_DOCUMENT != eventType) {
             switch (eventType) {
                 case XmlPullParser.START_DOCUMENT:
+                    Account.reset();
                 /*if (null == data) {
                     data = new ArrayList<ItemCategory>();
 				} else {
@@ -55,7 +56,7 @@ public class AccountImport extends XMLHandler {
                         }
                     } else if ("data".equals(name)) {
                         if (null != curItem) {
-                            curItemData = Account.AccountDetail.create(parser.getAttributeValue(null, "caption"), "");
+                            curItemData = AccountItemDetail.create(parser.getAttributeValue(null, "caption"), "");
                             readDataText = true;
                             curItem.addDetail(curItemData);
                         }

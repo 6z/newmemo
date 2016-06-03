@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 import a6z.com.newmemo.control.ExpandableView;
 import a6z.com.newmemo.model.Account;
+import a6z.com.newmemo.model.AccountItem;
+import a6z.com.newmemo.model.AccountItemDetail;
 
 public class AccountItemViewActivity extends AppCompatActivity implements AccountItemDetailRecyclerViewAdapter.OnInteractionListener {
 
@@ -28,7 +30,7 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
 
     private boolean mInEditMode;
 
-    private Account.AccountItem mItem;
+    private AccountItem mItem;
 
     private boolean m_IsModified;
 
@@ -258,7 +260,7 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
     }
 
     @Override
-    public void onItemDetailEditRequested(Account.AccountDetail detail) {
+    public void onItemDetailEditRequested(AccountItemDetail detail) {
         Intent intent = new Intent(this, AccountItemDetailEditActivity.class);
         intent.putExtra(AccountItemDetailEditActivity.ID_ARG_TAG, detail.getId());
         intent.putExtra(AccountItemDetailEditActivity.NAME_ARG_TAG, detail.getName());
@@ -268,7 +270,7 @@ public class AccountItemViewActivity extends AppCompatActivity implements Accoun
     }
 
     @Override
-    public void onItemDetailRemoveRequested(final Account.AccountDetail detail) {
+    public void onItemDetailRemoveRequested(final AccountItemDetail detail) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("确认删除吗？");
         builder.setTitle("提示");

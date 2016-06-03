@@ -10,7 +10,7 @@ import java.util.List;
 
 import a6z.com.newmemo.AccountListViewFragment.OnFragmentInteractionListener;
 import a6z.com.newmemo.model.Account;
-import a6z.com.newmemo.model.Account.AccountItem;
+import a6z.com.newmemo.model.AccountItem;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link AccountItem} and makes a call to the
