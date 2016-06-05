@@ -2,7 +2,6 @@ package a6z.com.newmemo;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.File;
 
 import a6z.com.newmemo.control.DividerItemDecoration;
 import a6z.com.newmemo.model.Account;
@@ -75,9 +72,10 @@ public class AccountListViewFragment extends Fragment {
         AccountImport _import = new AccountImport(getContext().getFilesDir(), "myNotes.xml");
         try {
             Account.setCachedMode(true);
-            _import.load();
-            Account.setCachedMode(false);
-            Account.beginSave();
+            if (_import.load()) {
+                Account.setCachedMode(false);
+                Account.beginSave();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             //Toast.makeText(this, "导入数据失败", Toast.LENGTH_SHORT).show();

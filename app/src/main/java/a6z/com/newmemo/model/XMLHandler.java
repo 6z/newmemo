@@ -27,7 +27,7 @@ public abstract class XMLHandler {
         saveString(strXML);
     }
 
-    public void load() throws Exception {
+    public boolean load() throws Exception {
         /*
          * File xmlFile = new File(fileDir, xmlFileName); if (!xmlFile.exists())
 		 * { return; } xmlFile.setReadable(true); FileInputStream fileStream =
@@ -39,9 +39,10 @@ public abstract class XMLHandler {
 		 */
         String content = loadString();
         if (content == "") {
-            return;
+            return false;
         }
         parse(content);
+        return true;
     }
 
     public String loadString() throws Exception {
