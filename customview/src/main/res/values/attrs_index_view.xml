@@ -1,0 +1,7 @@
+<resources>
+    <declare-styleable name="IndexView">
+        <attr name="indexArraySrc" format="reference" />
+        <attr name="textNormalDimension" format="dimension" />
+        <attr name="textNormalColor" format="color" />
+    </declare-styleable>
+</resources>

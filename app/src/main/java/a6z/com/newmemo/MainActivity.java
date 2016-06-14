@@ -86,6 +86,9 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             //Account.saveToFile(this, true);
             return true;
+        } else if (id == R.id.action_add) {
+            onAddItemRequest();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

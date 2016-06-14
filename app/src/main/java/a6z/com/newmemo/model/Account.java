@@ -153,15 +153,19 @@ public class Account {
         beginSave();
     }
 
-    public static void addItem(AccountItem item, int position) {
+    public static int addItem(AccountItem item, int position) {
         if (position < 0) {
             ITEMS.add(item);
         } else {
             ITEMS.add(position, item);
         }
+        if (!cachedMode) {
+            sortByTitle();
+        }
         ITEM_MAP.put(item.getId(), item);
         item.attach(ACCOUNT_CHANGED_LISTENER);
         beginSave();
+        return ITEMS.indexOf(item);
     }
 
     public static int modifyItem(String id, String title, String comment) {
@@ -170,7 +174,10 @@ public class Account {
             int index = ITEMS.indexOf(item);
             item.setTitle(title);
             item.setComment(comment);
-            return index;
+            if (!cachedMode) {
+                sortByTitle();
+            }
+            return ITEMS.indexOf(item);
         }
         return -1;
     }
@@ -219,8 +226,7 @@ public class Account {
     public static int indexOf(String itemId) {
         AccountItem accountItem = ITEM_MAP.get(itemId);
         if (accountItem != null) {
-            int index = ITEMS.indexOf(accountItem);
-            return index;
+            return ITEMS.indexOf(accountItem);
         }
         return -1;
     }
