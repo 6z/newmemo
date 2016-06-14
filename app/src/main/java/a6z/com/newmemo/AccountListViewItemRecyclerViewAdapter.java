@@ -15,7 +15,7 @@ import a6z.com.newmemo.model.AccountItem;
 /**
  * {@link RecyclerView.Adapter} that can display a {@link AccountItem} and makes a call to the
  * specified {@link OnFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ * 帐号列表视图适配器
  */
 public class AccountListViewItemRecyclerViewAdapter extends RecyclerView.Adapter<AccountListViewItemRecyclerViewAdapter.ViewHolder> {
 
@@ -37,7 +37,7 @@ public class AccountListViewItemRecyclerViewAdapter extends RecyclerView.Adapter
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mTitleView.setText(mValues.get(position).getTitle() + " " + mValues.get(position).getAlphabetOfTitle());
+        holder.mTitleView.setText(mValues.get(position).getTitle());
         holder.mCommentView.setText(mValues.get(position).getComment());
         holder.mUpdateTimeView.setText(mValues.get(position).getFormattedUpdateTime(holder.itemView.getContext().getString(R.string.time_format_pattern)));
 
@@ -58,9 +58,10 @@ public class AccountListViewItemRecyclerViewAdapter extends RecyclerView.Adapter
         return mValues.size();
     }
 
-    public void add(AccountItem item, int position) {
-        Account.addItem(item, position);
-        notifyItemInserted(position);
+    public int add(AccountItem item, int position) {
+        int pos = Account.addItem(item, position);
+        notifyItemInserted(pos);
+        return pos;
     }
 
     public void remove(AccountItem item) {
@@ -77,11 +78,13 @@ public class AccountListViewItemRecyclerViewAdapter extends RecyclerView.Adapter
         }
     }
 
-    public void notifyItemChanged(String itemId) {
+    public int notifyItemChanged(String itemId) {
         int position = Account.indexOf(itemId);
         if (position >= 0) {
-            notifyItemChanged(position);
+            notifyItemRangeChanged(0, getItemCount());
+            return position;
         }
+        return -1;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
